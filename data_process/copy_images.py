@@ -7,40 +7,47 @@ import re
 import pandas as pd
 
 def main():
-    base = "/media/nio/13357f85-3d3c-4608-9b8b-91b03de4c3bf1/unpacked/8.21"
-    svc_source = os.path.join(base, "svc")
-    data_root = os.path.join(base, "data", "静态_区分时延_D455imu")
+    base = "/media/nio/13357f85-3d3c-4608-9b8b-91b03de4c3bf1/unpacked/10.18"
+    svc_source = os.path.join(base, "车采数据", "CAMERA0")
+    data_root = os.path.join(base, "data")
 
     if not os.path.isdir(svc_source):
         print(f"错误：源图片目录不存在: {svc_source}")
         return
 
-    for i in range(1, 65):
-        scene_name = f"scene_{i}"
+    # 遍历实际存在的 scene 目录（删除/重编号后自动适配）
+    scene_dirs = sorted(
+        [d for d in os.listdir(data_root)
+         if d.startswith("scene_") and os.path.isdir(os.path.join(data_root, d))],
+        key=lambda x: int(x.split("_")[-1])
+    )
+
+    for scene_name in scene_dirs:
         scene_dir = os.path.join(data_root, scene_name)
-        imu_csv = os.path.join(scene_dir, "imu0", "data.csv")
+        cam_csv = os.path.join(scene_dir, "cam0", "data.csv")
 
-        if not os.path.isfile(imu_csv):
-            print(f"警告：{imu_csv} 不存在，跳过")
+        if not os.path.isfile(cam_csv):
+            print(f"警告：{cam_csv} 不存在，跳过")
             continue
 
-        # 自动检测分隔符（逗号、制表符或空格）
-        try:
-            df = pd.read_csv(imu_csv, sep=None, engine='python')
-        except Exception as e:
-            print(f"错误：读取 {imu_csv} 失败: {e}")
-            continue
+        # 读取 cam0/data.csv 第一列时间戳，取首尾作为该 scene 时间范围
+        start_ns = None
+        end_ns = None
+        with open(cam_csv, 'r') as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith('#'):
+                    continue
+                try:
+                    ts = int(line.split(',')[0])
+                except ValueError:
+                    continue
+                if start_ns is None:
+                    start_ns = ts
+                end_ns = ts
 
-        if df.empty:
-            print(f"警告：{imu_csv} 为空，跳过")
-            continue
-
-        # 提取第一列（时间戳），并确保转换为整数
-        try:
-            start_ns = int(pd.to_numeric(df.iloc[0, 0]))
-            end_ns = int(pd.to_numeric(df.iloc[-1, 0]))
-        except Exception as e:
-            print(f"错误：无法解析时间戳列: {e}")
+        if start_ns is None:
+            print(f"警告：{cam_csv} 无有效时间戳，跳过")
             continue
 
         print(f"处理 {scene_name}: 时间范围 [{start_ns}, {end_ns}]")
@@ -49,9 +56,9 @@ def main():
         target_svc = os.path.join(scene_dir, "svc")
         os.makedirs(target_svc, exist_ok=True)
 
-        # 匹配图片文件名
+        # 匹配图片文件名 (毫秒时间戳)
         pattern = re.compile(r'^CAMERA0_FRAME_(\d+)\.jpg$')
-        copied_count = 0
+        moved_count = 0
         for filename in os.listdir(svc_source):
             match = pattern.match(filename)
             if not match:
@@ -62,10 +69,10 @@ def main():
             if start_ns <= ts_ns <= end_ns:
                 src_path = os.path.join(svc_source, filename)
                 dst_path = os.path.join(target_svc, filename)
-                shutil.copy2(src_path, dst_path)
-                copied_count += 1
+                shutil.move(src_path, dst_path)
+                moved_count += 1
 
-        print(f"  复制了 {copied_count} 张图片到 {target_svc}")
+        print(f"  移动了 {moved_count} 张图片到 {target_svc}")
 
 if __name__ == "__main__":
     main()

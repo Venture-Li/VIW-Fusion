@@ -36,7 +36,7 @@ def merge_txt_files(directory, output_file):
 
 if __name__ == "__main__":
     # 默认目录（可修改为您的实际路径）
-    default_dir = "/media/nio/13357f85-3d3c-4608-9b8b-91b03de4c3bf1/unpacked/7.24/imu_car/"
+    default_dir = "/media/nio/13357f85-3d3c-4608-9b8b-91b03de4c3bf1/unpacked/10.18/车采数据/轮速/1/"
     default_output = os.path.join(default_dir, "combined.txt")
     
     # 命令行参数解析

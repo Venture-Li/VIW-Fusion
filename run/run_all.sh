@@ -11,14 +11,14 @@
 set -e
 
 VISUALIZE="${VISUALIZE:-1}"   # 设为 0 禁用可视化录制
-CONTAINER="e9863aeb6cce"
+CONTAINER="d05978977759"
 CONFIG="/root/catkin_ws/src/VIW-Fusion/config/realsense_d455i/realsense_stereo_imu_config_d455.yaml"
 OUTPUT_DIR="/root/catkin_ws/src/VIW-Fusion/output"
 BAG_DIR="/root/scene"
 SETUP="source /opt/ros/melodic/setup.bash && source /root/catkin_ws/devel/setup.bash"
 
 # 宿主机上 track bag 的目标目录
-HOST_DATA_BASE="/media/nio/13357f85-3d3c-4608-9b8b-91b03de4c3bf1/unpacked/6.24/data"
+HOST_DATA_BASE="/media/nio/13357f85-3d3c-4608-9b8b-91b03de4c3bf1/unpacked/10.18/data"
 HOST_OUTPUT="/home/nio/vscode/python_project_backup/VIW-Fusion/output"
 
 # 期望的输出文件（不含时间戳，用通配符匹配）
@@ -29,7 +29,6 @@ EXPECTED_FILES=(
     "points_output.txt"
     "pose_output.txt"
     "process_time.csv"
-    "scale_log_*.txt"
     "vins_init_log_*.txt"
     "vins_points_log_*.txt"
     "vio.csv"
@@ -42,7 +41,7 @@ if ! docker exec "$CONTAINER" bash -c "$SETUP && rostopic list" &>/dev/null; the
     sleep 3
 fi
 
-for i in $(seq 1 58); do
+for i in $(seq 1 20); do
     bag_file="$BAG_DIR/scene_$i.bag"
     if ! docker exec "$CONTAINER" test -f "$bag_file" 2>/dev/null; then
         echo "SKIP: $bag_file not found"

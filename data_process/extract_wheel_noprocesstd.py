@@ -7,7 +7,7 @@
 combined.txt 格式: timestamp_ns  FL(km/h)  FR(km/h)  RL(km/h)  RR(km/h)
 输出格式:           timestamp_ns,vx,vy,vz,wx,wy,wz
 
-转换公式 (后轮差速模型, B_r = 1.672m):
+转换公式 (后轮差速模型, B_r = 1.720m):
   vx = (v_RL + v_RR) / 2 * (1000/3600)   # km/h -> m/s
   wz = (v_RL - v_RR) / B_r * (1000/3600) # km/h -> m/s -> rad/s
   vy = vz = wx = wy = 0
@@ -18,9 +18,9 @@ import glob
 import numpy as np
 
 # ==================== 配置 ====================
-DATA_DIR = "/media/nio/13357f85-3d3c-4608-9b8b-91b03de4c3bf1/unpacked/6.24/time/"
-SPEED_FILE = "/media/nio/13357f85-3d3c-4608-9b8b-91b03de4c3bf1/unpacked/6.24/speed/recordSpeed_20260624_153736.txt"
-B_R = 1.672  # 后轮距 (米)
+DATA_DIR = "/media/nio/13357f85-3d3c-4608-9b8b-91b03de4c3bf1/unpacked/10.18/data"
+SPEED_FILE = "/media/nio/13357f85-3d3c-4608-9b8b-91b03de4c3bf1/unpacked/10.18/车采数据/轮速/1/combined.txt"
+B_R = 1.720  # 后轮距 (米), 实测轮距 1720mm
 MARGIN_NS = int(0.2 * 1e9)  # 轮速时间范围略大于RGB: 前后各扩展0.2秒
 # ==============================================
 
@@ -40,7 +40,12 @@ def load_speed_data(filepath):
             parts = line.split()
             if len(parts) < 5:
                 continue
-            timestamps.append(int(parts[0]))
+            try:
+                # 跳过表头等非数字行 (combined.txt 首行为 wallClockNs 列名)
+                ts_i = int(parts[0])
+            except ValueError:
+                continue
+            timestamps.append(ts_i)
             speeds.append([float(x) for x in parts[1:5]])
     ts = np.array(timestamps, dtype=np.int64)
     speeds = np.array(speeds, dtype=np.float64)

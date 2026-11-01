@@ -84,7 +84,14 @@ def extract_bag(bag_path):
         print(f"SKIP: {bag_path} not found")
         return
 
+    # track.bag -> track_images
     out_dir = bag_path.parent / f"{bag_path.stem}_images"
+
+    # 如果输出目录已存在，认为该 bag 已处理过，直接跳过
+    if out_dir.exists():
+        print(f"SKIP: output dir already exists -> {out_dir}")
+        return
+
     out_dir.mkdir(exist_ok=True)
 
     print(f"Processing: {bag_path}")
@@ -120,7 +127,7 @@ def main():
         extract_bag(sys.argv[1])
     else:
         # Batch mode: find all track.bag under data directory
-        data_base = Path("/media/nio/13357f85-3d3c-4608-9b8b-91b03de4c3bf1/unpacked/6.24/data")
+        data_base = Path("/media/nio/13357f85-3d3c-4608-9b8b-91b03de4c3bf1/unpacked/10.18/data")
         if not data_base.exists():
             print(f"ERROR: data directory not found: {data_base}")
             sys.exit(1)

@@ -13,13 +13,28 @@ wheel_topic: "/ridgeback_velocity_controller/odom"
 image0_topic: "/camera/infra1/image_rect_raw"
 image1_topic: "/camera/infra2/image_rect_raw"
 output_path: "/root/catkin_ws/src/VIW-Fusion/output"
-cam0_calib: "infra1_d455.yaml"
+cam0_calib: "svc_processed.yaml"
 cam1_calib: "infra2.yaml"
 image_width: 640
 image_height: 480
    
 
 # Extrinsic parameter between IMU and Camera.
+# 坐标系约定 (最终确认版):
+#   SVC (svc_right.json): 整车系A = x前/y左/z上, 原点 = 后轴中心在地面投影,
+#     p_cam_A = [2.04974, -1.11106, 1.01227] (离地高 1.0123m)
+#   IMU: 参考整车系B = x前/y右/z下, 原点 = 后轴中心 (离地 0.2413m),
+#     p_imu_B = [0.16817, 0.074581, 0.029385]
+#     → 换算到系A: p_imu_A = [0.16817, -0.074581, 0.2413-0.029385=0.211915]
+#     IMU 本体坐标系 = x右/y前/z上
+#     相对系B旋转 (由安装方向导出): x_i=y_B, y_i=x_B, z_i=-z_B
+#     → 相对系A: R_ia = [[0,-1,0],[1,0,0],[0,0,1]]
+# svc_processed 图像坐标系 = D455 光轴对齐系 (X_svc = R_sd^T @ X_p, R_sd 来自
+# extrinsic_svc_d455_1018_fused.txt), 故:
+#   R = R_ia @ R_bs @ R_sd^T,   t = R_ia @ (p_cam_A - p_imu_A)
+# 自检: 光轴在 IMU 系 = [0.831, -0.126, -0.542] → 指右、下俯 32.8° ✓;
+# 相机位于 IMU 右 1.04m / 前 1.88m / 上 0.80m ✓ (相机离地 1.012m, IMU 离地 0.212m)。
+# 外参精确可信 → 信任不在线标定:
 estimate_extrinsic: 0   # 0  Have an accurate extrinsic parameters. We will trust the following cam^R_imu, cam^T_imu (cam→IMU), don't change it.
                         # 1  Have an initial guess about extrinsic parameters. We will optimize around your initial guess.
                         # 2  Don't know anything about extrinsic parameters. You don't need to give R,T. We will try to calibrate it. Do some rotation movement at beginning.
@@ -30,15 +45,14 @@ extrinsic_type: 3 # 0 ALL
                   # 3 no z
                   # 4 no rotation and no z
 
-# cam0 → IMU (D455, P_imu = R * P_cam + t)
 body_T_cam0: !!opencv-matrix
    rows: 4
    cols: 4
    dt: d
-   data: [ 0.999994,  0.000078,  0.003535, -0.028933,
-          -0.000097,  0.999987,  0.005146, -0.007453,
-          -0.003535, -0.005147,  0.999981, -0.015558,
-           0,         0,         0,         1 ]
+   data: [ -0.11918200, -0.54339278,  0.83097530,  1.03647795,
+           -0.99168017,  0.02414598, -0.12644140,  1.88156674,
+            0.04864263, -0.83913125, -0.54174961,  0.80035557,
+            0,           0,           0,           1          ]
 
 # cam1 → IMU (单目模式不使用，保留占位)
 body_T_cam1: !!opencv-matrix
@@ -52,7 +66,16 @@ body_T_cam1: !!opencv-matrix
 
 
 # Extrinsic parameter between IMU and Wheel.
-estimate_wheel_extrinsic: 1   # 0  Have an accurate extrinsic parameters.
+# 轮速计假设位于后轴中心 (离地 0.2413m), 轮系轴向 = x前/y左/z上;
+# IMU 本体 x右/y前/z上, 离地 0.211915m (后轴中心下 29.4mm), 前方 168.17mm, 右侧 74.581mm。
+# 在整车系A(x前/y左/z上, 原点=后轴中心地面投影)中:
+#   p_wheel_A = [0, 0, 0.2413],  p_imu_A = [0.16817, -0.074581, 0.211915]
+# 轮系(前左上) → IMU(右前上): R = R_ia = [[0,-1,0],[1,0,0],[0,0,1]]
+# t = R_ia @ (p_wheel_A - p_imu_A) = [-0.074581, -0.16817, +0.029385]
+# 注意: estimate_wheel_extrinsic=1 → 以上面的 body_T_wheel 为初值在线优化
+# (extrinsic_type_wheel=3, 只优化 x/y 平移, 旋转和 z 固定);
+# 直行场景下杠杆臂可观性弱, 若输出 extrinsic_parameter.csv 发散, 改回 0 信任初值。
+estimate_wheel_extrinsic: 2   # 0  Have an accurate extrinsic parameters.
                               # 1  Have an initial guess, optimize around it.
                               # 2  Unknown, calibrate online (need rotation excitation).
 
@@ -62,15 +85,14 @@ extrinsic_type_wheel: 3 # 0 ALL
                         # 3 no z
                         # 4 no rotation and no z
 
-# wheel → body/IMU (P_imu = R * P_wheel + t, computed: wheel→SVC_Right→D455cam→D455IMU)
 body_T_wheel: !!opencv-matrix
   rows: 4
   cols: 4
   dt: d
-  data: [-0.99976372, 0.00573378, 0.02097928, 1.79264182,
-         -0.01604101, 0.4569381, -0.88935412, 1.36710289,
-         -0.01468514, -0.88948082, -0.45673756, -0.32303065,
-          0, 0, 0, 1]
+  data: [ 0, -1, 0, -0.074581,
+          1,  0, 0, -0.16817,
+          0,  0, 1,  0.029385,
+          0,  0, 0,  1]
 
 
 #plane noise
@@ -94,8 +116,8 @@ show_track: 1           # publish tracking image as topic
 flow_back: 1            # perform forward and backward optical flow to improve feature tracking accuracy
 
 #optimization parameters
-max_solver_time: 0.06  # max solver itration time (ms), to guarantee real time (increased for high-speed)
-max_num_iterations: 10  # max solver itrations, to guarantee real time (increased for high-speed)
+max_solver_time: 0.04  # max solver itration time (ms), to guarantee real time (increased for high-speed)
+max_num_iterations: 8  # max solver itrations, to guarantee real time (increased for high-speed)
 keyframe_parallax: 10.0 # keyframe selection threshold (pixel)
 
 # Near point refinement parameters for two-stage BA
@@ -105,10 +127,11 @@ near_point_ratio_max: 0.8         # maximum selection ratio (at stop)
 max_speed_for_ratio: 5.0          # max speed (m/s) for linear ratio mapping (≈18 km/h, slightly below 20 km/h)
 
 #imu parameters       The more accurate parameters you provide, the better performance
-acc_n: 0.024            # 加速度计白噪声 (m/s^2/√Hz)
-gyr_n: 0.002            # 陀螺仪白噪声 (rad/s/√Hz)
-acc_w: 0.0002           # 加速度计偏置随机游走 (m/s^3/√Hz)
-gyr_w: 1.8e-05          # 陀螺仪偏置随机游走 (rad/s^2/√Hz)
+# 来源: HZ-YF002-NT2 IMU3020 高精度车规级惯性测量单元产品说明书 V031_20230118
+acc_n: 5.0e-4            # 加速度计白噪声 (m/s^2/√Hz) = VRW 0.03 m/s/√hr ÷ 60
+gyr_n: 7.3e-5            # 陀螺仪白噪声 (rad/s/√Hz) = ARW 0.25 °/√hr ÷ 60 → rad
+acc_w: 1.0e-4            # 加速度计偏置随机游走 (m/s^3/√Hz), 由零偏不稳定性 45μg 估算 (τ≈100s), 手册未直接给出
+gyr_w: 2.0e-6            # 陀螺仪偏置随机游走 (rad/s^2/√Hz), 由零偏不稳定性 2°/hr 估算 (τ≈100s), 手册未直接给出
 g_norm: 9.81007         # 当地重力加速度
 
 #wheel parameters
@@ -130,7 +153,9 @@ sw: 1.0
 
 #unsynchronization parameters
 estimate_td: 0                      # online estimate time offset between camera and imu
-td: 0.00                             # initial value of time offset. unit: s. readed image clock + td = real image clock (IMU clock)
+# 实测: 相机时间戳需减 48ms 才与车 IMU 对齐 → td = -0.048
+# 代码约定 (estimator.cpp:569): curTime = image_stamp + td, td 应为 -0.048
+td: -0.048                          # time offset. unit: s. readed image clock + td = real image clock (IMU clock)
 #unsynchronization parameters
 estimate_td_wheel: 0                      # online estimate time offset between imu and wheel
 td_wheel: 0                          # initial value of time offset. unit: s. IMU_time - td_wheel = wheel_time (delay baked into bag)

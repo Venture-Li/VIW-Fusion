@@ -1,0 +1,90 @@
+{
+    "calibration_info": {
+        "algo_version": "eol-d144ba78a7/HEAD",
+        "based_on": "null",
+        "calibrated_date_of_base": "null",
+        "calibration_details": "eol",
+        "date": "2026-10-13 10:00:13",
+        "error_with_base": "null",
+        "error_with_design": [
+            -0.42864662408828738,
+            0.17817218601703645,
+            -0.733244001865387,
+            -0.004736583214253187,
+            0.006058900151401758,
+            -0.008270594291388989
+        ],
+        "location": "Hefei",
+        "parameter_counter": 1,
+        "parameter_format_version": "v1.3.0-BL210",
+        "is_designed_extrinsic": false,
+        "calibration_date": "2026-10-13-10-00-13"
+    },
+    "extrinsic_param": {
+        "rotation": [
+            0.01486996840685606,
+            -2.71858811378479,
+            1.5560836791992188
+        ],
+        "translation": [
+            2.049736738204956,
+            -1.1110589504241944,
+            1.0122705698013306
+        ]
+    },
+    "flip_and_mirror": 0,
+    "fov": 200,
+    "intrinsic_param": {
+        "affine_c": 0.9998642802238464,
+        "affine_d": -0.003963136114180088,
+        "affine_e": 0.003615228459239006,
+        "cam2world": [
+            -444.0540466308594,
+            0.0,
+            0.0003955786523874849,
+            2.753815522282821e-7,
+            7.098927695681212e-11
+        ],
+        "cam2world_len": 5,
+        "camera_height": 1536,
+        "camera_model": 2,
+        "camera_width": 1920,
+        "center": [
+            958.2839965820313,
+            771.0186157226563
+        ],
+        "distortion_model": "polynomial coefficients",
+        "principal_point": [
+            958.2839965820313,
+            771.0186157226563
+        ],
+        "world2cam": [
+            815.670654296875,
+            604.608154296875,
+            81.63072967529297,
+            80.23296356201172,
+            63.91236877441406,
+            14.250330924987792,
+            16.081928253173829,
+            19.396484375,
+            2.5701489448547365,
+            -3.728235721588135,
+            -1.1530909538269044
+        ],
+        "world2cam_len": 11
+    },
+    "module_info": {
+        "crc16": "0xade6",
+        "imager_part_number": "IMX623AAAH5SONY",
+        "lens_part_number": "AT318LF-400",
+        "manufacturer_name": "SSL",
+        "manufacturer_pn": "V39773",
+        "manufacturer_sn": "D16826N00418",
+        "map_version": "0x0101",
+        "nio_part_number_revision": "P0437777 AC",
+        "nio_serial_number": "NZ0SLTL00418A1AA",
+        "origin_name": "S0001X1"
+    },
+    "name": "SVC_Right",
+    "pixel_size": 0.000003
+}

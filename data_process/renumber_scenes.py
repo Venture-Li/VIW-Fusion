@@ -10,9 +10,9 @@
 import os
 import sys
 
-DATA_DIR = "/media/nio/13357f85-3d3c-4608-9b8b-91b03de4c3bf1/unpacked/6.24/data"
-BAG_DIR  = "/media/nio/13357f85-3d3c-4608-9b8b-91b03de4c3bf1/unpacked/6.24/bag"
-OUT_DIR  = "/home/nio/vscode/python_project_backup/VIW-Fusion/output"
+DATA_DIR = "/media/nio/13357f85-3d3c-4608-9b8b-91b03de4c3bf1/unpacked/10.18/data"
+BAG_DIR  = ""  # 10.18 无 bag 目录，留空跳过
+OUT_DIR  = ""  # 10.18 无 output 目录，留空跳过
 
 TEMP_PREFIX_DATA = "scene_renumber_tmp_"
 TEMP_PREFIX_BAG  = "scene_renumber_tmp_"
@@ -69,7 +69,7 @@ def do_rename(old_nums, mapping):
         old_path = os.path.join(OUT_DIR, f"1cam_init_scale_scene_{old}")
         tmp_path = os.path.join(OUT_DIR, f"{TEMP_PREFIX_OUT}{new}")
         new_path = os.path.join(OUT_DIR, f"1cam_init_scale_scene_{new}")
-        if os.path.isdir(old_path):
+        if OUT_DIR and os.path.isdir(old_path):
             ops.append(("output", old_path, tmp_path, new_path))
 
     # 第一步：原始 -> 临时

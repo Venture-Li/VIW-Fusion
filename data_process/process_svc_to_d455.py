@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-SVC(KB 4参数) → 针孔 640x480 (SLAM/DA3 兼容版, 多进程)
-- 顶部视野固定扩大 1.25 倍
-- 左右视野固定扩大 1.2 倍
-- 底部保持不变
-- LANCZOS4 插值 (比 INTER_LINEAR 清晰)
-- 不做任何锐化/对比度/亮度增强, 最大化 SLAM 和 DA3 兼容性
+SVC(KB 4参数) → 针孔 640x480, 严格对齐 D455 深度图 (多进程)
+- 目标内参 = D455 深度相机内参 (fx=fy=386.7249, 畸变为0), 输出像素网格
+  与深度图逐像素重合, 可直接用深度值做逐像素评测
+- 光轴经外参旋转 R_SVC_TO_D455 与 D455 对齐 (P_d455 = R @ P_svc + t)
+- LANCZOS4 插值, 不做任何锐化/对比度/亮度增强
 - 支持多进程加速
+
+注意: 平移 t (~0.15m) 引入的视差无法在重映射中消除, 逐像素评测时
+深度真值应投影到 SVC 光心 (或在评测端处理视差), 见评测脚本。
 
 用法:
   python3 process_svc_to_d455.py --scene-dir /path/to/scene_1
@@ -27,24 +29,34 @@ import io
 
 
 # ====================================================================
-# 相机内参 (来自 extrinsic_svc_d455_0821.txt)
+# 相机内参 (来自 extrinsic_svc_d455_1018_fused.txt)
 # ====================================================================
 
 K_SVC = np.array([
-    [413.4521,   0.0,     959.5152],
-    [  0.0,    412.6878,  768.0989],
+    [432.3153,   0.0,     958.1447],
+    [  0.0,    432.3608,  770.0823],
     [  0.0,      0.0,       1.0   ],
 ], dtype=np.float64)
 
 DIST_SVC = np.array(
-    [0.17030521, -0.00308843, -0.01711661, 0.00219803],
+    [0.14961081, -0.02615333, -0.01884815, 0.00978025],
     dtype=np.float64
 )
 
+# D455 深度相机内参 (scene_N/intrinsics.txt Depth 段, 畸变为0)
+# 输出像素网格与深度图逐像素重合, 便于直接投影做深度评测
 K_TARGET_BASE = np.array([
-    [381.6182,   0.0,     320.0508],
-    [  0.0,    381.2833,  241.8335],
+    [386.7249,   0.0,     323.3481],
+    [  0.0,    386.7249,  233.6760],
     [  0.0,      0.0,       1.0   ],
+], dtype=np.float64)
+
+# SVC -> D455 旋转 (extrinsic_svc_d455_1018_fused.txt, P_d455 = R @ P_svc + t)
+# 传入 initUndistortRectifyMap 后, 输出图像的光轴与 D455 对齐
+R_SVC_TO_D455 = np.array([
+    [ 0.99176726,  0.03108473, -0.12422338],
+    [-0.03676192,  0.99836928, -0.04367313],
+    [ 0.12266324,  0.04788027,  0.99129270],
 ], dtype=np.float64)
 
 OUT_W, OUT_H = 640, 480
@@ -52,10 +64,10 @@ OUT_W, OUT_H = 640, 480
 SVC_SIZE = (1920, 1536)
 
 # ====================================================================
-# 固定放大倍率
+# 视野放大倍率 (严格深度对齐时均为 1.0; >1 时输出视野超出 D455 深度图)
 # ====================================================================
-TOP_RATIO = 1.25    # 顶部视野扩大 1.25 倍
-SIDE_RATIO = 1.2    # 左右视野扩大 1.2 倍
+TOP_RATIO = 1.0     # 顶部视野放大倍率
+SIDE_RATIO = 1.0    # 左右视野放大倍率
 
 
 # ====================================================================
@@ -98,8 +110,10 @@ def compute_target_K(top_ratio=TOP_RATIO, side_ratio=SIDE_RATIO):
 # ====================================================================
 
 def build_remap(new_K):
+    # R_SVC_TO_D455: 输出(针孔)相机的光线方向先经 R 的逆变换回 SVC 坐标系,
+    # 使输出图像坐标系与 D455 光轴对齐 (P_d455 = R @ P_svc + t)
     map1, map2 = cv2.fisheye.initUndistortRectifyMap(
-        K_SVC, DIST_SVC, np.eye(3), new_K,
+        K_SVC, DIST_SVC, R_SVC_TO_D455, new_K,
         (OUT_W, OUT_H), cv2.CV_32FC1
     )
     return map1, map2
@@ -169,17 +183,18 @@ def main():
     svc_size_local = (int(w_str), int(h_str))
 
     print("=" * 60)
-    print("SVC(KB 4参数) → 针孔 640x480 (SLAM/DA3 兼容版, 多进程)")
-    print(f"顶部放大倍率: {TOP_RATIO}, 左右放大倍率: {SIDE_RATIO}")
+    print("SVC(KB 4参数) → 针孔 640x480, 严格对齐 D455 深度图 (多进程)")
+    print(f"视野放大倍率: 顶部 {TOP_RATIO}, 左右 {SIDE_RATIO}")
     print(f"并行进程数: {args.workers}")
     print("=" * 60)
     print(f"SVC 内参:")
     print(f"  fx={K_SVC[0,0]:.2f}, fy={K_SVC[1,1]:.2f}, "
           f"cx={K_SVC[0,2]:.2f}, cy={K_SVC[1,2]:.2f}")
     print(f"  dist(KB 4) = {DIST_SVC.tolist()}")
-    print(f"基准 D455 内参:")
+    print(f"D455 深度内参 (对齐目标):")
     print(f"  fx={K_TARGET_BASE[0,0]:.2f}, fy={K_TARGET_BASE[1,1]:.2f}, "
           f"cx={K_TARGET_BASE[0,2]:.2f}, cy={K_TARGET_BASE[1,2]:.2f}")
+    print(f"外参旋转 R_SVC_TO_D455 已应用于光轴对齐")
     print(f"处理策略: LANCZOS4 插值, 无任何像素级增强")
 
     new_K = compute_target_K()

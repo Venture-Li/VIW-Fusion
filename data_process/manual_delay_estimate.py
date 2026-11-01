@@ -15,9 +15,9 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 # ==================== 手动指定文件路径 ====================
-WHEEL_FILE = "/media/nio/13357f85-3d3c-4608-9b8b-91b03de4c3bf1/unpacked/8.21/time/wheel/combine.txt"   # 你的轮速文件
-IMU_FILE   = "/media/nio/13357f85-3d3c-4608-9b8b-91b03de4c3bf1/unpacked/8.21/time/scene_1/imu0/data.csv"    # 你的IMU文件
-LABEL      = "manual_pair"           # 图表名称前缀（可自定义）
+WHEEL_FILE = "/media/nio/13357f85-3d3c-4608-9b8b-91b03de4c3bf1/unpacked/10.18/车采数据/轮速/1/recordSpeed_20261018_162857.txt"
+IMU_FILE   = "/media/nio/13357f85-3d3c-4608-9b8b-91b03de4c3bf1/unpacked/10.18/车采数据/imu/1/imu_ad_20261018_162857_302.txt"
+LABEL      = "car_imu_vs_wheel"      # 图表名称前缀（可自定义）
 # =========================================================
 
 # 算法参数（与原脚本一致）
@@ -30,16 +30,18 @@ PLOT_ENABLE = True
 # ---------- 以下为函数定义（完全复制自原脚本，未改动）----------
 
 def load_wheel(filepath):
-    data = np.loadtxt(filepath)
-    ts = data[:, 0].astype(np.int64)
-    vx = data[:, 1]
+    data = np.genfromtxt(filepath, delimiter='\t', names=True)
+    ts = data['wallClockNs'].astype(np.int64)
+    # 轮速原始单位为 km/h，统一换算为 m/s
+    vx = (data['speedFL'] + data['speedFR'] + data['speedRL'] + data['speedRR']) / 4.0 / 3.6
     return ts, vx
 
 def load_imu(filepath):
-    data = np.loadtxt(filepath, delimiter=',', skiprows=1)
-    ts = data[:, 0].astype(np.int64)
-    ax = data[:, 4]
-    return ts, ax
+    data = np.genfromtxt(filepath, delimiter='\t', names=True)
+    ts = data['wallClockNs'].astype(np.int64)
+    ax = data['accX_m_s2']
+    ay = data['accY_m_s2']
+    return ts, ax, ay
 
 def resample(t_grid, ts_src, values):
     return np.interp(t_grid, ts_src.astype(np.float64), values)
@@ -139,7 +141,7 @@ def estimate_delay(wheel_file, imu_file, label=""):
     print(f"{'='*60}")
 
     wheel_ts, wheel_vx = load_wheel(wheel_file)
-    imu_ts, imu_ax = load_imu(imu_file)
+    imu_ts, imu_ax_x, imu_ax_y = load_imu(imu_file)
 
     # 只取有运动的数据段
     moving_mask = np.abs(wheel_vx) > 0.1
@@ -170,7 +172,8 @@ def estimate_delay(wheel_file, imu_file, label=""):
         return None
 
     wheel_vx_rs = resample(t_grid, wheel_ts, wheel_vx)
-    imu_ax_rs = resample(t_grid, imu_ts, imu_ax)
+    imu_ax_x_rs = resample(t_grid, imu_ts, imu_ax_x)
+    imu_ax_y_rs = resample(t_grid, imu_ts, imu_ax_y)
 
     duration = (t_end - t_start) / 1e9
     print(f"  重叠时长: {duration:.1f}s, 样本数: {len(t_grid)}")
@@ -192,6 +195,15 @@ def estimate_delay(wheel_file, imu_file, label=""):
         def apply_filter(sig):
             return filtfilt(b, a, sig)
         print("  使用 Butterworth 带通 (0.15–0.35 Hz)")
+
+    # 自动选择与前进方向更一致的水平加速度轴（accX / accY）
+    tmp_x = apply_filter(signal.detrend(imu_ax_x_rs))
+    tmp_y = apply_filter(signal.detrend(imu_ax_y_rs))
+    if np.std(tmp_x) >= np.std(tmp_y):
+        imu_ax_rs, axis_name = imu_ax_x_rs, "accX"
+    else:
+        imu_ax_rs, axis_name = imu_ax_y_rs, "accY"
+    print(f"  选用 IMU 水平轴: {axis_name} (带通后 std: X={np.std(tmp_x):.4f}, Y={np.std(tmp_y):.4f})")
 
     # ---- 方法2: 速度 ----
     print(f"\n  [方法2] 轮速 vs IMU 速度 互相关...")
@@ -263,14 +275,96 @@ def estimate_delay(wheel_file, imu_file, label=""):
 
         out_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "delay_plots")
         os.makedirs(out_dir, exist_ok=True)
+        prefix = label if label else "delay"
 
-        # 加速度图（与原来一致，此处省略详细绘图代码以节省篇幅，但实际脚本中保留全部）
-        # ...（完整绘图代码同原脚本，可复制原脚本中的绘图部分）
-        # 为保持可读性，这里用注释代替，实际使用时需补全
-        # 你可以直接复制原脚本的绘图代码（从 if PLOT_ENABLE: 开始到结束）
+        # ---- 图0: 原始信号总览 ----
+        fig0, ax0 = plt.subplots(2, 1, figsize=(14, 7), sharex=True)
+        ax0[0].plot(t_sec, wheel_vx_rs, 'b-', lw=0.8, label='wheel vx (raw)')
+        ax0[0].set_ylabel('wheel speed')
+        ax0[0].legend(loc='upper right')
+        ax0[0].grid(alpha=0.3)
+        ax0[1].plot(t_sec, imu_ax_x_rs, 'r-', lw=0.8, label='imu accX (raw)')
+        ax0[1].plot(t_sec, imu_ax_y_rs, 'g-', lw=0.8, label='imu accY (raw)')
+        ax0[1].set_ylabel('imu acc (m/s^2)')
+        ax0[1].set_xlabel('time (s)')
+        ax0[1].legend(loc='upper right')
+        ax0[1].grid(alpha=0.3)
+        fig0.suptitle(f'{prefix} - raw overview')
+        fig0.tight_layout()
+        fig0.savefig(os.path.join(out_dir, f"{prefix}_0_overview.png"), dpi=150)
+        plt.close(fig0)
 
-        # 速度图同理
-        pass
+        # ---- 图1: 加速度方法 ----
+        fig1, ax1 = plt.subplots(3, 1, figsize=(14, 10))
+        # 1a 带通后的轮加速度 vs IMU 加速度
+        ax1[0].plot(t_sec, wheel_acc_bp, 'b-', lw=0.8, label='wheel acc (bandpass)')
+        ax1[0].plot(t_sec, imu_ax_bp, 'r-', lw=0.8, alpha=0.7, label=f'imu ax {axis_name} (bandpass)')
+        ax1[0].set_ylabel('acc (bandpass)')
+        ax1[0].legend(loc='upper right')
+        ax1[0].grid(alpha=0.3)
+        ax1[0].set_title('Acceleration: wheel acc vs imu acc')
+        # 1b 互相关曲线
+        ax1[1].plot(lags1 * 1000, corr1, 'b-', lw=1.0, label='cross-correlation')
+        ax1[1].axvline(cc1_lag * 1000, color='r', ls='--',
+                       label=f'CC peak: {cc1_lag*1000:+.1f} ms (r={cc1_corr:.3f})')
+        ax1[1].axvline(gcc1_lag * 1000, color='g', ls='--',
+                       label=f'GCC-PHAT peak: {gcc1_lag*1000:+.1f} ms')
+        ax1[1].set_xlabel('lag (ms)   [>0: wheel leads imu]')
+        ax1[1].set_ylabel('corr')
+        ax1[1].legend(loc='upper right')
+        ax1[1].grid(alpha=0.3)
+        ax1[1].set_title('Cross-correlation (acceleration)')
+        # 1c 按估计时延平移后的对齐效果
+        shift_n = int(round(cc1_lag * RESAMPLE_HZ))
+        ax1[2].plot(t_sec, wheel_acc_bp, 'b-', lw=0.8, label='wheel acc')
+        ax1[2].plot(t_sec + shift_n * dt, imu_ax_bp, 'r-', lw=0.8, alpha=0.7,
+                    label=f'imu ax shifted by {cc1_lag*1000:+.1f} ms')
+        ax1[2].set_xlim(t_plot_start, t_plot_end)
+        ax1[2].set_xlabel('time (s)')
+        ax1[2].set_ylabel('acc (bandpass)')
+        ax1[2].legend(loc='upper right')
+        ax1[2].grid(alpha=0.3)
+        ax1[2].set_title('Alignment check after shift (acceleration)')
+        fig1.tight_layout()
+        fig1.savefig(os.path.join(out_dir, f"{prefix}_1_acc.png"), dpi=150)
+        plt.close(fig1)
+
+        # ---- 图2: 速度方法 ----
+        fig2, ax2 = plt.subplots(3, 1, figsize=(14, 10))
+        # 2a 带通后的轮速 vs IMU 积分速度
+        ax2[0].plot(t_sec, wheel_vx_bp, 'b-', lw=0.8, label='wheel vx (bandpass)')
+        ax2[0].plot(t_sec, imu_vx_bp, 'r-', lw=0.8, alpha=0.7, label='imu integrated vx (bandpass)')
+        ax2[0].set_ylabel('velocity (bandpass)')
+        ax2[0].legend(loc='upper right')
+        ax2[0].grid(alpha=0.3)
+        ax2[0].set_title('Velocity: wheel vx vs imu integrated vx')
+        # 2b 互相关曲线
+        ax2[1].plot(lags2 * 1000, corr2, 'b-', lw=1.0, label='cross-correlation')
+        ax2[1].axvline(cc2_lag * 1000, color='r', ls='--',
+                       label=f'CC peak: {cc2_lag*1000:+.1f} ms (r={cc2_corr:.3f})')
+        ax2[1].axvline(gcc2_lag * 1000, color='g', ls='--',
+                       label=f'GCC-PHAT peak: {gcc2_lag*1000:+.1f} ms')
+        ax2[1].set_xlabel('lag (ms)   [>0: wheel leads imu]')
+        ax2[1].set_ylabel('corr')
+        ax2[1].legend(loc='upper right')
+        ax2[1].grid(alpha=0.3)
+        ax2[1].set_title('Cross-correlation (velocity)')
+        # 2c 按估计时延平移后的对齐效果
+        shift_n2 = int(round(cc2_lag * RESAMPLE_HZ))
+        ax2[2].plot(t_sec, wheel_vx_bp, 'b-', lw=0.8, label='wheel vx')
+        ax2[2].plot(t_sec + shift_n2 * dt, imu_vx_bp, 'r-', lw=0.8, alpha=0.7,
+                    label=f'imu vx shifted by {cc2_lag*1000:+.1f} ms')
+        ax2[2].set_xlim(t_plot_start, t_plot_end)
+        ax2[2].set_xlabel('time (s)')
+        ax2[2].set_ylabel('velocity (bandpass)')
+        ax2[2].legend(loc='upper right')
+        ax2[2].grid(alpha=0.3)
+        ax2[2].set_title('Alignment check after shift (velocity)')
+        fig2.tight_layout()
+        fig2.savefig(os.path.join(out_dir, f"{prefix}_2_vel.png"), dpi=150)
+        plt.close(fig2)
+
+        print(f"  图片已保存至: {out_dir}")
 
     return {
         'label': label,

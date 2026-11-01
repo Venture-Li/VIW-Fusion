@@ -1,0 +1,114 @@
+ config/realsense_d455i/realsense_stereo_imu_config_d455.yaml         |   63 [32m++[m[31m--[m
+ config/realsense_d455i/svc_processed.yaml                            |   16 [32m+[m
+ data_process/__pycache__/copy_images.cpython-312.pyc                 |  Bin [31m0[m -> [32m3741[m bytes
+ data_process/__pycache__/extract_car_imu_noprocesstd.cpython-312.pyc |  Bin [31m0[m -> [32m6775[m bytes
+ data_process/__pycache__/extract_wheel_noprocesstd.cpython-312.pyc   |  Bin [31m0[m -> [32m7120[m bytes
+ data_process/__pycache__/manual_delay_estimate.cpython-312.pyc       |  Bin [31m0[m -> [32m22661[m bytes
+ data_process/__pycache__/process_svc_to_d455.cpython-312.pyc         |  Bin [31m0[m -> [32m15471[m bytes
+ data_process/__pycache__/renumber_scenes.cpython-312.pyc             |  Bin [31m0[m -> [32m5789[m bytes
+ data_process/__pycache__/synthesize_bag_svc.cpython-311.pyc          |  Bin [31m0[m -> [32m20314[m bytes
+ data_process/__pycache__/synthesize_bag_svc.cpython-312.pyc          |  Bin [31m0[m -> [32m17855[m bytes
+ data_process/copy_images.py                                          |   65 [32m++[m[31m--[m
+ data_process/delay_plots/car_imu_vs_wheel_0_overview.png             |  Bin [31m0[m -> [32m215176[m bytes
+ data_process/delay_plots/car_imu_vs_wheel_1_acc.png                  |  Bin [31m0[m -> [32m327418[m bytes
+ data_process/delay_plots/car_imu_vs_wheel_2_vel.png                  |  Bin [31m0[m -> [32m336782[m bytes
+ data_process/ex_svc_right.json                                       |   85 [31m-----[m
+ data_process/extract_car_imu_noprocesstd.py                          |  143 [32m+++++++++[m
+ data_process/extract_wheel_noprocesstd.py                            |   15 [32m+[m[31m-[m
+ data_process/extrinsic_svc_d455_0821.txt                             |   46 [31m---[m
+ data_process/extrinsic_svc_d455_1018_fused.txt                       |   58 [32m++++[m
+ data_process/manual_delay_estimate.py                                |  134 [32m++++++[m[31m--[m
+ data_process/manual_delay_estimate_car.py                            |  386 [31m----------------------[m
+ data_process/merge_txt.py                                            |    2 [32m+[m[31m-[m
+ data_process/process_svc_to_d455.py                                  |   53 [32m+[m[31m--[m
+ data_process/renumber_scenes.py                                      |    8 [32m+[m[31m-[m
+ data_process/svc_right.json                                          |   90 [32m++++++[m
+ data_process/synthesize_bag_svc.py                                   |  639 [32m+++++++++++++[m[31m------------------------[m
+ eval/__pycache__/eval_depth_svc.cpython-311.pyc                      |  Bin [31m0[m -> [32m20883[m bytes
+ eval/batch_eval_svc.sh                                               |  339 [32m++++++++++++++++++++[m
+ eval/eval_depth_svc.py                                               |  325 [32m+++++++++++++++++++[m
+ output/extrinsic_iterate_wheel.csv                                   |  230 [32m++++++++++++++[m
+ output/groundtruth.csv                                               |    0
+ output/process_time.csv                                              |    0
+ output/scene_1/log/extrinsic_iterate_wheel.csv                       |  252 [32m+++++++++++++++[m
+ output/scene_1/log/extrinsic_parameter.csv                           |   22 [32m++[m
+ output/scene_1/log/groundtruth.csv                                   |    0
+ output/scene_1/log/points_output.txt                                 |  273 [32m++++++++++++++++[m
+ output/scene_1/log/pose_output.txt                                   |   11 [32m+[m
+ output/scene_1/log/process_time.csv                                  |    0
+ output/scene_1/log/vins_init_log_20261031_073314.txt                 | 1532 [32m+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++[m
+ output/scene_1/log/vins_points_log_20261031_073329.txt               |   33 [32m++[m
+ output/scene_1/log/vio.csv                                           |   32 [32m++[m
+ output/scene_10/log/extrinsic_iterate_wheel.csv                      |  117 [32m+++++++[m
+ output/scene_10/log/groundtruth.csv                                  |    0
+ output/scene_10/log/process_time.csv                                 |    0
+ output/scene_10/log/vins_init_log_20261031_075518.txt                |  853 [32m+++++++++++++++++++++++++++++++++++++++++++++++++[m
+ output/scene_10/log/vio.csv                                          |    0
+ output/scene_11/log/extrinsic_iterate_wheel.csv                      |  264 [32m+++++++++++++++[m
+ output/scene_11/log/extrinsic_parameter.csv                          |   22 [32m++[m
+ output/scene_11/log/groundtruth.csv                                  |    0
+ output/scene_11/log/points_output.txt                                |  191 [32m+++++++++++[m
+ output/scene_11/log/pose_output.txt                                  |   11 [32m+[m
+ output/scene_11/log/process_time.csv                                 |    0
+ output/scene_11/log/vins_init_log_20261031_075723.txt                | 1895 [32m++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++[m
+ output/scene_11/log/vins_points_log_20261031_075746.txt              |    3 [32m+[m
+ output/scene_11/log/vio.csv                                          |    2 [32m+[m
+ output/scene_12/log/extrinsic_iterate_wheel.csv                      |  206 [32m++++++++++++[m
+ output/scene_12/log/groundtruth.csv                                  |    0
+ output/scene_12/log/process_time.csv                                 |    0
+ output/scene_12/log/vins_init_log_20261031_080041.txt                | 1136 [32m+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++[m
+ output/scene_12/log/vio.csv                                          |    0
+ output/scene_2/log/extrinsic_iterate_wheel.csv                       |  274 [32m++++++++++++++++[m
+ output/scene_2/log/extrinsic_parameter.csv                           |   22 [32m++[m
+ output/scene_2/log/groundtruth.csv                                   |    0
+ output/scene_2/log/points_output.txt                                 |    0
+ output/scene_2/log/pose_output.txt                                   |   11 [32m+[m
+ output/scene_2/log/process_time.csv                                  |    0
+ output/scene_2/log/vins_init_log_20261031_073527.txt                 |  365 [32m+++++++++++++++++++++[m
+ output/scene_2/log/vins_points_log_20261031_073532.txt               |  217 [32m+++++++++++++[m
+ output/scene_2/log/vio.csv                                           |  216 [32m+++++++++++++[m
+ output/scene_3/log/extrinsic_iterate_wheel.csv                       |  141 [32m++++++++[m
+ output/scene_3/log/groundtruth.csv                                   |    0
+ output/scene_3/log/process_time.csv                                  |    0
+ output/scene_3/log/vins_init_log_20261031_073802.txt                 |  969 [32m+++++++++++++++++++++++++++++++++++++++++++++++++++++++[m
+ output/scene_3/log/vio.csv                                           |    0
+ output/scene_4/log/extrinsic_iterate_wheel.csv                       |   87 [32m+++++[m
+ output/scene_4/log/groundtruth.csv                                   |    0
+ output/scene_4/log/process_time.csv                                  |    0
+ output/scene_4/log/vins_init_log_20261031_074023.txt                 |  495 [32m++++++++++++++++++++++++++++[m
+ output/scene_4/log/vio.csv                                           |    0
+ output/scene_5/log/extrinsic_iterate_wheel.csv                       |  169 [32m++++++++++[m
+ output/scene_5/log/groundtruth.csv                                   |    0
+ output/scene_5/log/process_time.csv                                  |    0
+ output/scene_5/log/vins_init_log_20261031_074222.txt                 | 1249 [32m+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++[m
+ output/scene_5/log/vio.csv                                           |    0
+ output/scene_6/log/extrinsic_iterate_wheel.csv                       |  302 [32m++++++++++++++++++[m
+ output/scene_6/log/groundtruth.csv                                   |    0
+ output/scene_6/log/process_time.csv                                  |    0
+ output/scene_6/log/vins_init_log_20261031_074522.txt                 | 2211 [32m++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++[m
+ output/scene_6/log/vio.csv                                           |    0
+ output/scene_7/log/extrinsic_iterate_wheel.csv                       |  107 [32m+++++++[m
+ output/scene_7/log/extrinsic_parameter.csv                           |   22 [32m++[m
+ output/scene_7/log/groundtruth.csv                                   |    0
+ output/scene_7/log/points_output.txt                                 |  100 [32m++++++[m
+ output/scene_7/log/pose_output.txt                                   |   11 [32m+[m
+ output/scene_7/log/process_time.csv                                  |    0
+ output/scene_7/log/vins_init_log_20261031_074812.txt                 |  797 [32m++++++++++++++++++++++++++++++++++++++++++++++[m
+ output/scene_7/log/vins_points_log_20261031_074820.txt               |    6 [32m+[m
+ output/scene_7/log/vio.csv                                           |    5 [32m+[m
+ output/scene_8/log/extrinsic_iterate_wheel.csv                       |  167 [32m++++++++++[m
+ output/scene_8/log/groundtruth.csv                                   |    0
+ output/scene_8/log/process_time.csv                                  |    0
+ output/scene_8/log/vins_init_log_20261031_074954.txt                 | 1141 [32m+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++[m
+ output/scene_8/log/vio.csv                                           |    0
+ output/scene_9/log/extrinsic_iterate_wheel.csv                       |  129 [32m++++++++[m
+ output/scene_9/log/groundtruth.csv                                   |    0
+ output/scene_9/log/process_time.csv                                  |    0
+ output/scene_9/log/vins_init_log_20261031_075255.txt                 |  782 [32m+++++++++++++++++++++++++++++++++++++++++++++[m
+ output/scene_9/log/vio.csv                                           |    0
+ output/track.bag                                                     |  Bin [31m0[m -> [32m431469055[m bytes
+ output/vins_init_log_20261031_080357.txt                             | 1410 [32m++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++[m
+ output/vio.csv                                                       |    0
+ run/extract_track_images.py                                          |   11 [32m+[m[31m-[m
+ run/run_all.sh                                                       |    7 [32m+[m[31m-[m
+ 113 files changed, 19942 insertions(+), 1033 deletions(-)
