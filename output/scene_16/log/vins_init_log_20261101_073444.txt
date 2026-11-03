@@ -1,0 +1,1735 @@
+========== VINS Initialization Log ==========
+Log started at: 2026-11-01 07:34:44
+Log file: /root/catkin_ws/src/VIW-Fusion/output/vins_init_log_20261101_073444.txt
+=============================================
+
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 11
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.292081, -0.457978, 9.760755]
+[DATA]   var: 0.136580
+[DATA]   valid_count: 10
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.276026, -0.454317, 9.794229]
+[DATA]   var: 0.128126
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.269604, -0.457254, 9.771962]
+[DATA]   var: 0.133387
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.268599, -0.446435, 9.757314]
+[DATA]   var: 0.122094
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.280613, -0.425889, 9.739902]
+[DATA]   var: 0.127042
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.259480, -0.413457, 9.768186]
+[DATA]   var: 0.120542
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.277855, -0.384445, 9.791287]
+[DATA]   var: 0.131265
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.267290, -0.360876, 9.770247]
+[DATA]   var: 0.122456
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.279643, -0.331021, 9.762771]
+[DATA]   var: 0.103573
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.276867, -0.318019, 9.762589]
+[DATA]   var: 0.103629
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.277934, -0.308557, 9.759582]
+[DATA]   var: 0.105657
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.286805, -0.301762, 9.757278]
+[DATA]   var: 0.104320
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.297051, -0.296461, 9.753334]
+[DATA]   var: 0.094382
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.292343, -0.294799, 9.751161]
+[DATA]   var: 0.092555
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.297645, -0.290140, 9.753264]
+[DATA]   var: 0.093735
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.298889, -0.277359, 9.752269]
+[DATA]   var: 0.096131
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.290973, -0.258777, 9.775670]
+[DATA]   var: 0.112245
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.297972, -0.230733, 9.772204]
+[DATA]   var: 0.118539
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.291995, -0.197949, 9.767331]
+[DATA]   var: 0.118809
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.287719, -0.152761, 9.784898]
+[DATA]   var: 0.117829
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.301466, -0.114244, 9.762741]
+[DATA]   var: 0.136239
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.300093, -0.080197, 9.768357]
+[DATA]   var: 0.138903
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.308199, -0.042895, 9.739167]
+[DATA]   var: 0.107039
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.301478, -0.007046, 9.749166]
+[DATA]   var: 0.111107
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.306030, 0.016758, 9.767396]
+[DATA]   var: 0.111365
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.317790, 0.035660, 9.779953]
+[DATA]   var: 0.103985
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.309037, 0.051113, 9.794402]
+[DATA]   var: 0.080564
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.294379, 0.068729, 9.774665]
+[DATA]   var: 0.097092
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.308522, 0.089737, 9.776764]
+[DATA]   var: 0.109217
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.313370, 0.121706, 9.769959]
+[DATA]   var: 0.114399
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.304975, 0.154972, 9.759869]
+[DATA]   var: 0.113531
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.290652, 0.188765, 9.776774]
+[DATA]   var: 0.100951
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.291740, 0.215194, 9.776010]
+[DATA]   var: 0.085893
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.296019, 0.237044, 9.787667]
+[DATA]   var: 0.067716
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.281181, 0.245927, 9.779161]
+[DATA]   var: 0.063403
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.268226, 0.245428, 9.769228]
+[DATA]   var: 0.056540
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.258067, 0.226373, 9.767354]
+[DATA]   var: 0.071241
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.266899, 0.200860, 9.762029]
+[DATA]   var: 0.092789
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.269370, 0.169302, 9.761872]
+[DATA]   var: 0.102903
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.257713, 0.134016, 9.762178]
+[DATA]   var: 0.106341
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.252730, 0.093867, 9.758381]
+[DATA]   var: 0.105389
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.262910, 0.056607, 9.748838]
+[DATA]   var: 0.098670
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.278484, 0.029991, 9.743936]
+[DATA]   var: 0.100375
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.268769, -0.001461, 9.763572]
+[DATA]   var: 0.098968
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.265062, -0.030570, 9.758513]
+[DATA]   var: 0.094941
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.275855, -0.057215, 9.764564]
+[DATA]   var: 0.088615
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.276278, -0.088004, 9.780320]
+[DATA]   var: 0.079623
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.271309, -0.117086, 9.792331]
+[DATA]   var: 0.071641
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.263143, -0.138900, 9.794804]
+[DATA]   var: 0.067715
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.262390, -0.150104, 9.793394]
+[DATA]   var: 0.065604
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.256714, -0.164623, 9.780388]
+[DATA]   var: 0.067167
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.272574, -0.174567, 9.777226]
+[DATA]   var: 0.080931
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.272064, -0.173007, 9.779638]
+[DATA]   var: 0.079928
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.273416, -0.172163, 9.770032]
+[DATA]   var: 0.076675
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.266619, -0.172586, 9.766270]
+[DATA]   var: 0.084366
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.286454, -0.172104, 9.782205]
+[DATA]   var: 0.092185
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.277221, -0.178508, 9.792483]
+[DATA]   var: 0.090125
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.275195, -0.176603, 9.800481]
+[DATA]   var: 0.087766
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.262490, -0.178451, 9.791790]
+[DATA]   var: 0.096449
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.280123, -0.173440, 9.782397]
+[DATA]   var: 0.100672
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.287505, -0.174310, 9.778102]
+[DATA]   var: 0.107224
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.280433, -0.168673, 9.757687]
+[DATA]   var: 0.093756
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.278861, -0.167203, 9.775789]
+[DATA]   var: 0.116127
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.270599, -0.158330, 9.716976]
+[DATA]   var: 0.311341
+[DATA]   valid_count: 11
+[INFO] PASS: IMU excitation OK
+[INFO] relativePose SUCCESS:
+[DATA]   base frame l: 3
+[DATA]   relative_T: [-0.866628, -0.058788, 0.495479]
+[DATA]   relative_T norm: 1.000000
+[INFO] FAILED: Global SFM failed!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.241298, -0.154478, 9.636810]
+[DATA]   var: 0.375648
+[DATA]   valid_count: 11
+[INFO] PASS: IMU excitation OK
+[INFO] relativePose SUCCESS:
+[DATA]   base frame l: 3
+[DATA]   relative_T: [-0.992951, 0.021177, -0.116621]
+[DATA]   relative_T norm: 1.000000
+[INFO] SFM result:
+[DATA]   success: 1
+[DATA]   ba_cost: 0.065027
+[INFO] WARNING: BA cost 0.065027 is above threshold 0.020000
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.251456, -0.146809, 9.643907]
+[DATA]   var: 0.383569
+[DATA]   valid_count: 11
+[INFO] PASS: IMU excitation OK
+[INFO] relativePose SUCCESS:
+[DATA]   base frame l: 1
+[DATA]   relative_T: [-0.983059, -0.115859, 0.142026]
+[DATA]   relative_T norm: 1.000000
+[INFO] FAILED: Global SFM failed!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.256571, -0.154748, 9.725902]
+[DATA]   var: 0.442838
+[DATA]   valid_count: 11
+[INFO] PASS: IMU excitation OK
+[INFO] relativePose SUCCESS:
+[DATA]   base frame l: 0
+[DATA]   relative_T: [-0.992492, 0.033319, -0.117683]
+[DATA]   relative_T norm: 1.000000
+[INFO] SFM result:
+[DATA]   success: 1
+[DATA]   ba_cost: 0.038441
+[INFO] WARNING: BA cost 0.038441 is above threshold 0.020000
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.252368, -0.182783, 9.767427]
+[DATA]   var: 0.475052
+[DATA]   valid_count: 11
+[INFO] PASS: IMU excitation OK
+[INFO] relativePose SUCCESS:
+[DATA]   base frame l: 0
+[DATA]   relative_T: [-0.955490, 0.137218, -0.261171]
+[DATA]   relative_T norm: 1.000000
+[INFO] SFM result:
+[DATA]   success: 1
+[DATA]   ba_cost: 0.262684
+[INFO] WARNING: BA cost 0.262684 is above threshold 0.020000
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.259407, -0.165115, 9.718707]
+[DATA]   var: 0.464581
+[DATA]   valid_count: 11
+[INFO] PASS: IMU excitation OK
+[INFO] relativePose SUCCESS:
+[DATA]   base frame l: 0
+[DATA]   relative_T: [-0.806102, 0.300463, -0.509825]
+[DATA]   relative_T norm: 1.000000
+[INFO] FAILED: Global SFM failed!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.254903, -0.166519, 9.801299]
+[DATA]   var: 0.341758
+[DATA]   valid_count: 11
+[INFO] PASS: IMU excitation OK
+[INFO] relativePose SUCCESS:
+[DATA]   base frame l: 0
+[DATA]   relative_T: [-0.960998, 0.114109, -0.251915]
+[DATA]   relative_T norm: 1.000000
+[INFO] SFM result:
+[DATA]   success: 1
+[DATA]   ba_cost: 0.176231
+[INFO] WARNING: BA cost 0.176231 is above threshold 0.020000
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.273946, -0.181779, 9.793686]
+[DATA]   var: 0.341158
+[DATA]   valid_count: 11
+[INFO] PASS: IMU excitation OK
+[INFO] relativePose SUCCESS:
+[DATA]   base frame l: 0
+[DATA]   relative_T: [-0.920984, 0.171128, -0.350004]
+[DATA]   relative_T norm: 1.000000
+[INFO] FAILED: Global SFM failed!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.266846, -0.185674, 9.813423]
+[DATA]   var: 0.351786
+[DATA]   valid_count: 11
+[INFO] PASS: IMU excitation OK
+[INFO] relativePose SUCCESS:
+[DATA]   base frame l: 0
+[DATA]   relative_T: [-0.951578, 0.118665, -0.283581]
+[DATA]   relative_T norm: 1.000000
+[INFO] SFM result:
+[DATA]   success: 1
+[DATA]   ba_cost: 0.315731
+[INFO] WARNING: BA cost 0.315731 is above threshold 0.020000
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.271086, -0.166763, 9.771317]
+[DATA]   var: 0.307605
+[DATA]   valid_count: 11
+[INFO] PASS: IMU excitation OK
+[INFO] relativePose SUCCESS:
+[DATA]   base frame l: 0
+[DATA]   relative_T: [-0.864379, 0.206814, -0.458341]
+[DATA]   relative_T norm: 1.000000
+[INFO] SFM result:
+[DATA]   success: 1
+[DATA]   ba_cost: 0.661210
+[INFO] WARNING: BA cost 0.661210 is above threshold 0.020000
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.290220, -0.147394, 9.737895]
+[DATA]   var: 0.290291
+[DATA]   valid_count: 11
+[INFO] PASS: IMU excitation OK
+[INFO] relativePose SUCCESS:
+[DATA]   base frame l: 0
+[DATA]   relative_T: [-0.982453, 0.049756, -0.179753]
+[DATA]   relative_T norm: 1.000000
+[INFO] FAILED: Global SFM failed!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.312656, -0.166257, 9.757632]
+[DATA]   var: 0.275449
+[DATA]   valid_count: 11
+[INFO] PASS: IMU excitation OK
+[INFO] relativePose SUCCESS:
+[DATA]   base frame l: 0
+[DATA]   relative_T: [-0.947731, 0.118240, -0.296354]
+[DATA]   relative_T norm: 1.000000
+[INFO] SFM result:
+[DATA]   success: 1
+[DATA]   ba_cost: 0.158429
+[INFO] WARNING: BA cost 0.158429 is above threshold 0.020000
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.322031, -0.160666, 9.810043]
+[DATA]   var: 0.211591
+[DATA]   valid_count: 11
+[INFO] PASS: IMU excitation OK
+[INFO] relativePose SUCCESS:
+[DATA]   base frame l: 0
+[DATA]   relative_T: [-0.962443, 0.109958, -0.248218]
+[DATA]   relative_T norm: 1.000000
+[INFO] FAILED: Global SFM failed!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.322773, -0.153869, 9.800612]
+[DATA]   var: 0.177845
+[DATA]   valid_count: 11
+[INFO] PASS: IMU excitation OK
+[INFO] relativePose SUCCESS:
+[DATA]   base frame l: 2
+[DATA]   relative_T: [-0.466075, 0.209991, -0.859464]
+[DATA]   relative_T norm: 1.000000
+[INFO] FAILED: Global SFM failed!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.326197, -0.153626, 9.759674]
+[DATA]   var: 0.117459
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.324358, -0.159794, 9.736059]
+[DATA]   var: 0.087686
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.311495, -0.160544, 9.753163]
+[DATA]   var: 0.075968
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.320862, -0.165689, 9.758615]
+[DATA]   var: 0.072318
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.321768, -0.190208, 9.786210]
+[DATA]   var: 0.077861
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.339518, -0.216747, 9.786544]
+[DATA]   var: 0.098252
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.343807, -0.242188, 9.784724]
+[DATA]   var: 0.103207
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.348663, -0.270998, 9.788344]
+[DATA]   var: 0.103167
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.374425, -0.302542, 9.787704]
+[DATA]   var: 0.094102
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.374451, -0.331569, 9.754885]
+[DATA]   var: 0.111069
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.384447, -0.345908, 9.753897]
+[DATA]   var: 0.108234
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.369078, -0.357312, 9.750147]
+[DATA]   var: 0.108106
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.353517, -0.372610, 9.750216]
+[DATA]   var: 0.105086
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.344035, -0.387509, 9.754586]
+[DATA]   var: 0.104444
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.327856, -0.389554, 9.767632]
+[DATA]   var: 0.095173
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.309813, -0.386521, 9.762827]
+[DATA]   var: 0.092524
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.285764, -0.364986, 9.755015]
+[DATA]   var: 0.104735
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.276115, -0.330756, 9.756554]
+[DATA]   var: 0.115833
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.269191, -0.288194, 9.744182]
+[DATA]   var: 0.117711
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.251720, -0.248735, 9.734280]
+[DATA]   var: 0.099589
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.252507, -0.211807, 9.764056]
+[DATA]   var: 0.078973
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.258110, -0.187627, 9.769383]
+[DATA]   var: 0.066685
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.260366, -0.178302, 9.774303]
+[DATA]   var: 0.076249
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.239796, -0.173157, 9.763392]
+[DATA]   var: 0.096897
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.222225, -0.164528, 9.761437]
+[DATA]   var: 0.101026
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.207926, -0.159927, 9.754612]
+[DATA]   var: 0.103651
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.190776, -0.156502, 9.765733]
+[DATA]   var: 0.101871
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.183770, -0.151448, 9.770943]
+[DATA]   var: 0.094768
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.177746, -0.151066, 9.767498]
+[DATA]   var: 0.084531
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.178079, -0.150023, 9.777678]
+[DATA]   var: 0.077314
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.160551, -0.150313, 9.775156]
+[DATA]   var: 0.089201
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.168426, -0.152265, 9.769872]
+[DATA]   var: 0.086662
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.151150, -0.159508, 9.770078]
+[DATA]   var: 0.087323
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.162930, -0.162515, 9.773536]
+[DATA]   var: 0.105324
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.181968, -0.172931, 9.765374]
+[DATA]   var: 0.119393
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.217920, -0.199507, 9.774163]
+[DATA]   var: 0.113333
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.221525, -0.250026, 9.761763]
+[DATA]   var: 0.147685
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.248564, -0.315654, 9.754255]
+[DATA]   var: 0.181913
+[DATA]   valid_count: 11
+[INFO] PASS: IMU excitation OK
+[INFO] relativePose SUCCESS:
+[DATA]   base frame l: 0
+[DATA]   relative_T: [-0.986758, -0.098804, 0.128633]
+[DATA]   relative_T norm: 1.000000
+[INFO] FAILED: Global SFM failed!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.247607, -0.383719, 9.754194]
+[DATA]   var: 0.191945
+[DATA]   valid_count: 11
+[INFO] PASS: IMU excitation OK
+[INFO] relativePose SUCCESS:
+[DATA]   base frame l: 0
+[DATA]   relative_T: [-0.957304, -0.134249, 0.256019]
+[DATA]   relative_T norm: 1.000000
+[INFO] FAILED: Global SFM failed!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.221782, -0.453892, 9.771250]
+[DATA]   var: 0.170475
+[DATA]   valid_count: 11
+[INFO] PASS: IMU excitation OK
+[INFO] relativePose SUCCESS:
+[DATA]   base frame l: 0
+[DATA]   relative_T: [-0.989987, 0.051065, -0.131599]
+[DATA]   relative_T norm: 1.000000
+[INFO] FAILED: Global SFM failed!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.187683, -0.515517, 9.755461]
+[DATA]   var: 0.129118
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.187924, -0.551140, 9.759635]
+[DATA]   var: 0.099851
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.176750, -0.551039, 9.762665]
+[DATA]   var: 0.086556
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.163861, -0.551217, 9.762906]
+[DATA]   var: 0.078958
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.185394, -0.540106, 9.751494]
+[DATA]   var: 0.073042
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.177765, -0.535502, 9.754702]
+[DATA]   var: 0.075986
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.187922, -0.530510, 9.778209]
+[DATA]   var: 0.059216
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.186833, -0.524435, 9.773737]
+[DATA]   var: 0.072456
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.212971, -0.514914, 9.766304]
+[DATA]   var: 0.084118
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.225854, -0.502953, 9.771376]
+[DATA]   var: 0.094399
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.234690, -0.491780, 9.774143]
+[DATA]   var: 0.089065
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.255321, -0.474593, 9.756885]
+[DATA]   var: 0.081825
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.278173, -0.454088, 9.752981]
+[DATA]   var: 0.069564
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.274209, -0.450607, 9.758724]
+[DATA]   var: 0.070011
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.262055, -0.462440, 9.767129]
+[DATA]   var: 0.077292
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.279213, -0.501651, 9.747156]
+[DATA]   var: 0.123409
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.285007, -0.563053, 9.750546]
+[DATA]   var: 0.168592
+[DATA]   valid_count: 11
+[INFO] PASS: IMU excitation OK
+[INFO] relativePose SUCCESS:
+[DATA]   base frame l: 0
+[DATA]   relative_T: [-0.993728, 0.015446, -0.110754]
+[DATA]   relative_T norm: 1.000000
+[INFO] SFM result:
+[DATA]   success: 1
+[DATA]   ba_cost: 0.109883
+[INFO] WARNING: BA cost 0.109883 is above threshold 0.020000
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.288009, -0.633306, 9.766635]
+[DATA]   var: 0.172847
+[DATA]   valid_count: 11
+[INFO] PASS: IMU excitation OK
+[INFO] relativePose SUCCESS:
+[DATA]   base frame l: 0
+[DATA]   relative_T: [-0.997915, 0.014030, -0.062992]
+[DATA]   relative_T norm: 1.000000
+[INFO] FAILED: Global SFM failed!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.288987, -0.701751, 9.761524]
+[DATA]   var: 0.142620
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.298713, -0.753397, 9.760261]
+[DATA]   var: 0.101328
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.295184, -0.796474, 9.770290]
+[DATA]   var: 0.063480
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.300754, -0.830120, 9.768946]
+[DATA]   var: 0.084202
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.298243, -0.856434, 9.763537]
+[DATA]   var: 0.097463
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.299805, -0.883802, 9.748442]
+[DATA]   var: 0.106451
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.290418, -0.931116, 9.760527]
+[DATA]   var: 0.106091
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.302688, -0.971761, 9.755537]
+[DATA]   var: 0.096850
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.300910, -0.987156, 9.729776]
+[DATA]   var: 0.110530
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.290421, -0.998007, 9.743149]
+[DATA]   var: 0.117985
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.311393, -1.014289, 9.771211]
+[DATA]   var: 0.128628
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.322384, -1.018978, 9.770464]
+[DATA]   var: 0.128122
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.311418, -1.019876, 9.759977]
+[DATA]   var: 0.128628
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.317394, -1.037263, 9.785296]
+[DATA]   var: 0.110906
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.334028, -1.042271, 9.786677]
+[DATA]   var: 0.094160
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.302994, -1.030867, 9.760405]
+[DATA]   var: 0.090700
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 12
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.297509, -1.012588, 9.743195]
+[DATA]   var: 0.087937
+[DATA]   valid_count: 11
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 13
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.291590, -0.989681, 9.751725]
+[DATA]   var: 0.093238
+[DATA]   valid_count: 12
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 14
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.290219, -0.957428, 9.755209]
+[DATA]   var: 0.107996
+[DATA]   valid_count: 13
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 15
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.288265, -0.929531, 9.749580]
+[DATA]   var: 0.110716
+[DATA]   valid_count: 14
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 17
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.288858, -0.915789, 9.751092]
+[DATA]   var: 0.109922
+[DATA]   valid_count: 16
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 18
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.285947, -0.893532, 9.749073]
+[DATA]   var: 0.107570
+[DATA]   valid_count: 17
+[INFO] REJECT: IMU excitation not enough!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 20
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.283955, -0.796122, 9.765681]
+[DATA]   var: 0.320284
+[DATA]   valid_count: 19
+[INFO] PASS: IMU excitation OK
+[INFO] relativePose SUCCESS:
+[DATA]   base frame l: 0
+[DATA]   relative_T: [-0.963816, 0.111206, -0.242263]
+[DATA]   relative_T norm: 1.000000
+[INFO] FAILED: Global SFM failed!
+[INFO] ========== initialStructure() FAILED ==========
+[INFO] ========== initialStructure() START ==========
+[DATA] frame_count: 10
+[DATA] all_image_frame size: 21
+----------------------------------------
+[INFO] IMU Observability Check:
+[DATA]   aver_g: [-0.278447, -0.677789, 9.761797]
+[DATA]   var: 0.438273
+[DATA]   valid_count: 20
+[INFO] PASS: IMU excitation OK
+[INFO] relativePose SUCCESS:
+[DATA]   base frame l: 0
+[DATA]   relative_T: [-0.998861, -0.022200, -0.042241]
+[DATA]   relative_T norm: 1.000000
+[INFO] SFM result:
+[DATA]   success: 1
+[DATA]   ba_cost: 0.019230
+[INFO] SUCCESS: BA cost 0.019230 is below threshold 0.020000
+[INFO] Global SFM SUCCESS
+[INFO] Calling visualInitialAlign...
+[INFO] ========== visualInitialAlign() START ==========
+[INFO] VisualIMUAlignment SUCCESS
+[DATA] Estimated scale s: 0.349876
+[INFO] PASS: Scale check OK
+[INFO] visualInitialAlign SUCCESS
+[INFO] ========== initialStructure() SUCCESS ==========
+========== Log End ==========

@@ -75,7 +75,7 @@ body_T_cam1: !!opencv-matrix
 # 注意: estimate_wheel_extrinsic=1 → 以上面的 body_T_wheel 为初值在线优化
 # (extrinsic_type_wheel=3, 只优化 x/y 平移, 旋转和 z 固定);
 # 直行场景下杠杆臂可观性弱, 若输出 extrinsic_parameter.csv 发散, 改回 0 信任初值。
-estimate_wheel_extrinsic: 2   # 0  Have an accurate extrinsic parameters.
+estimate_wheel_extrinsic: 1   # 0  Have an accurate extrinsic parameters.
                               # 1  Have an initial guess, optimize around it.
                               # 2  Unknown, calibrate online (need rotation excitation).
 
