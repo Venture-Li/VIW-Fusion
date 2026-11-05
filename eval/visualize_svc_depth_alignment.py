@@ -67,34 +67,28 @@ def main():
     if color is None or raw is None or raw.ndim != 2: raise RuntimeError('Cannot read SVC/depth image')
     depth = raw.astype(np.float64) * .001
     h, w = color.shape[:2]
-    yy, xx = np.indices(depth.shape)
-    valid = (depth > 0) & (depth < args.max_depth)
-    rays = np.linalg.inv(K) @ np.vstack((xx[valid], yy[valid], np.ones(valid.sum())))
-    p_d = rays * depth[valid]
-    p_p = R_dp @ p_d + t_dp[:, None]
-    valid2 = p_p[2] > 0
-    uv = K @ p_p[:, valid2]
-    u = np.rint(uv[0]/uv[2]).astype(int)
-    v = np.rint(uv[1]/uv[2]).astype(int)
-    keep = (u >= 0) & (u < w) & (v >= 0) & (v < h)
-    u = u[keep]
-    v = v[keep]
-    z = p_p[2, valid2][keep]
-    # z-buffer: nearest depth wins at each processed-SVC pixel.
-    registered = np.zeros((h, w), np.float32)
-    order = np.argsort(z)
-    for j in order:
-        if registered[v[j], u[j]] == 0: registered[v[j], u[j]] = z[j]
+    # Inverse warp: every processed-SVC pixel queries the corresponding
+    # D455 depth pixel. This avoids the holes/grid produced by forward splats.
+    yy, xx = np.indices((h, w), dtype=np.float64)
+    rays_p = np.linalg.inv(K) @ np.vstack((xx.ravel(), yy.ravel(), np.ones(h*w)))
+    rays_d = R_cd @ rays_p + t_cd[:, None]
+    map_u = (K[0, 0] * rays_d[0] / rays_d[2] + K[0, 2]).reshape(h, w).astype(np.float32)
+    map_v = (K[1, 1] * rays_d[1] / rays_d[2] + K[1, 2]).reshape(h, w).astype(np.float32)
+    registered = cv2.remap(depth.astype(np.float32), map_u, map_v, cv2.INTER_LINEAR,
+                           borderMode=cv2.BORDER_CONSTANT, borderValue=0)
+    mask = (registered > 0) & (registered < args.max_depth)
     depth_color = cv2.applyColorMap(np.uint8(np.clip(registered/args.max_depth, 0, 1)*255), cv2.COLORMAP_JET)
-    mask = registered > 0
     overlay = color.copy()
-    overlay[mask] = cv2.addWeighted(color, 1-args.alpha, depth_color, args.alpha, 0)[mask]
+    blended = cv2.addWeighted(color, 1-args.alpha, depth_color, args.alpha, 0)
+    overlay[mask] = blended[mask]
+    side = np.hstack((color, overlay))
     # Do not draw the projected depth lattice: it is sampling structure, not
     # scene geometry. The valid depth mask is shown only as translucent color.
     cv2.putText(overlay, f'SVC {svc_ts:.6f}  depth {dep_ts:.6f}  dt={(dep_ts-svc_ts)*1000:.1f} ms',
                 (8, 22), cv2.FONT_HERSHEY_SIMPLEX, .48, (255,255,255), 1, cv2.LINE_AA)
     output = args.output or (args.scene / 'alignment_overlay.png')
     cv2.imwrite(str(output), overlay)
+    cv2.imwrite(str(args.scene / 'alignment_side_by_side.png'), side)
     cv2.imwrite(str(args.scene / 'registered_depth_svc.png'), np.uint16(np.clip(registered*1000, 0, 65535)))
     depth_view = np.uint8(np.clip(registered/args.max_depth, 0, 1)*255)
     depth_view[~mask] = 0
@@ -104,6 +98,7 @@ def main():
     print(f'Depth: {dep_path} ({dep_ts:.6f}), dt={(dep_ts-svc_ts)*1000:.2f} ms')
     print(f'Projected depth pixels: {int(mask.sum())}/{h*w} ({100*mask.mean():.1f}%)')
     print(f'Overlay: {output}')
+    print(f'Side-by-side: {args.scene / "alignment_side_by_side.png"}')
     print(f'Depth visualization: {args.scene / "registered_depth_svc_view.png"}')
 
 if __name__ == '__main__': main()
