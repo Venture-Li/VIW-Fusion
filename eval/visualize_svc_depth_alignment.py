@@ -89,11 +89,8 @@ def main():
     mask = registered > 0
     overlay = color.copy()
     overlay[mask] = cv2.addWeighted(color, 1-args.alpha, depth_color, args.alpha, 0)[mask]
-    # Draw sparse projected points in green for an easier geometric check.
-    # The projected depth lattice is not scene geometry. Draw only sparse
-    # samples so it does not mask the image and look like false contours.
-    step = max(1, len(u)//800)
-    for x, y in zip(u[::step], v[::step]): cv2.circle(overlay, (int(x), int(y)), 1, (0,255,0), -1)
+    # Do not draw the projected depth lattice: it is sampling structure, not
+    # scene geometry. The valid depth mask is shown only as translucent color.
     cv2.putText(overlay, f'SVC {svc_ts:.6f}  depth {dep_ts:.6f}  dt={(dep_ts-svc_ts)*1000:.1f} ms',
                 (8, 22), cv2.FONT_HERSHEY_SIMPLEX, .48, (255,255,255), 1, cv2.LINE_AA)
     output = args.output or (args.scene / 'alignment_overlay.png')
