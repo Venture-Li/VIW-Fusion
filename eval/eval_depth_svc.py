@@ -1,325 +1,220 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+"""Evaluate world landmarks against depth reprojected into the processed SVC camera.
+Calibration JSON is explicit: P_processed = R_depth_to_processed @ P_depth + t.
+Timestamp offsets are added to file timestamps to express them on the pose/image clock.
 """
-SVC 深度评测: VINS 点云深度 vs D455 深度真值 (严格全外参版)
-
-与 eval_depth_4m_wheel.py (D455 版) 的区别:
-  D455 版中 VINS 相机与深度相机同光心, est/gt 都是 D455 系 z 值, 直接同像素对比。
-  SVC 与 D455 光心不重合 (平移 t≈0.15m), 存在随距离变化的视差,
-  本脚本用全外参链消除:
-    1) VINS 点 (世界系) → IMU → D455 相机系, 投影到深度图像素 (K_depth, 无畸变)
-    2) 取该像素深度真值 z_gt, 反投影为 3D 点 (D455 光心)
-    3) P_svc = R^T (P_d455 - t)  变换到 SVC 光心, 全外参 (R+t) 处理视差
-    4) est_depth = VINS 点在 SVC 系的 z; gt_depth = 真值点在 SVC 系的 z
-  二者是"同一表面点从 SVC 光心观测的 z 深度", 严格可比。
-
-坐标系约定 (extrinsic_svc_d455_1018_fused.txt): P_d455 = R @ P_svc + t
-处理后的 SVC 针孔图 (svc_processed) 内参 = K_depth, 光轴已对齐 D455。
-"""
-
-import numpy as np
+import argparse
+import csv
+import json
+from pathlib import Path
 import cv2
-import os
-import glob
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-
-# ==================== 用户配置（仅修改这里！） ====================
-data_root = "/media/nio/13357f85-3d3c-4608-9b8b-91b03de4c3bf1/unpacked/10.18/data/scene_1/"
-pose_file = "/home/nio/vscode/python_project_backup/VIW-Fusion/output/pose_output.txt"
-points_file = "/home/nio/vscode/python_project_backup/VIW-Fusion/output/points_output.txt"
-frame_timestamp = 1792312506.500302   # 秒 (VINS 位姿时间戳)
-
-# 图像目录
-cam_subdir = "svc_processed"          # 处理后的 SVC 针孔图 (640x480, 对齐深度图)
-depth_subdir = "depth0"               # D455 原始深度图 (无畸变, 直接用)
-
-# D455 深度相机内参 (scene_N/intrinsics.txt Depth 段, 畸变为0)
-# 处理后的 SVC 针孔图使用同一内参, 两侧投影共用
-K_D = np.array([
-    [386.7249, 0,        323.3481],
-    [0,        386.7249, 233.6760],
-    [0,        0,        1       ]
-])
-
-# SVC -> D455 外参: P_d455 = R_sd @ P_svc + t_sd
-R_sd = np.array([
-    [ 0.99176726,  0.03108473, -0.12422338],
-    [-0.03676192,  0.99836928, -0.04367313],
-    [ 0.12266324,  0.04788027,  0.99129270]
-])
-t_sd = np.array([-0.021910, 0.123421, 0.096283])
-
-# D455 IMU → cam0 外参 (cam0.yaml, body_T_cam0: P_imu = R_bc @ P_cam + t_bc)
-R_bc = np.array([
-    [ 0.999994,  0.000078,  0.003535],
-    [-0.000097,  0.999987,  0.005146],
-    [-0.003535, -0.005147,  0.999981]
-])
-t_bc = np.array([-0.028933, -0.007453, -0.015558])
-R_ic = R_bc.T               # P_cam = R_ic @ (P_imu - t_bc) 中的旋转
-t_ic = -R_ic @ t_bc
-
-DEPTH_MAX = 3.0             # 评测最大深度 (米), 与 D455 版一致
-
-# 输出文件
-output_image = "./projected_points_frame.png"
-overlay_image = "./color_depth_overlay.png"
-depth_scatter = "./depth_scatter.png"
-comparison_csv = "./depth_comparison.csv"
-# =================================================================
+import numpy as np
 
 
-def parse_pose_line(line):
-    parts = line.strip().split()
-    t = float(parts[0])
-    p = np.array([float(parts[1]), float(parts[2]), float(parts[3])])
-    q = np.array([float(parts[4]), float(parts[5]), float(parts[6]), float(parts[7])])
-    return t, p, q
+def matrix(path, key):
+    fs = cv2.FileStorage(str(path), cv2.FILE_STORAGE_READ)
+    if not fs.isOpened():
+        raise ValueError(f'Cannot open {path}')
+    value = fs.getNode(key).mat()
+    fs.release()
+    if value is None:
+        raise ValueError(f'{key} missing from {path}')
+    return value
 
 
-def quat_to_rot(q):
-    qx, qy, qz, qw = q
-    return np.array([
-        [1-2*qy**2-2*qz**2, 2*qx*qy-2*qz*qw,   2*qx*qz+2*qy*qw  ],
-        [2*qx*qy+2*qz*qw,   1-2*qx**2-2*qz**2, 2*qy*qz-2*qx*qw  ],
-        [2*qx*qz-2*qy*qw,   2*qy*qz+2*qx*qw,   1-2*qx**2-2*qy**2]
-    ])
-
-
-def load_points_with_visibility(points_file):
-    points, obs = [], []
-    with open(points_file, 'r') as f:
-        for line in f:
-            line = line.strip()
-            if not line:
-                continue
-            parts = list(map(float, line.split()))
-            if len(parts) < 3:
-                continue
-            points.append(parts[:3])
-            obs.append(parts[3:] if len(parts) > 3 else [])
-    return np.array(points), obs
-
-
-def is_point_visible(target_stamp, obs_list, tol=1e-4):
-    for s in obs_list:
-        if abs(s - target_stamp) < tol:
-            return True
-    return False
-
-
-def find_cam_image(cam_dir, frame_timestamp):
-    """cam_subdir 按 data.csv (cam0) 或文件名毫秒时间戳 (svc_processed) 找最近帧"""
-    if os.path.isfile(os.path.join(cam_dir, "data.csv")):
-        stamps, names = [], []
-        with open(os.path.join(cam_dir, "data.csv")) as f:
-            for line in f:
-                line = line.strip()
-                if not line or line.startswith('#'):
+def image_index(directory):
+    index = directory / 'data.csv'
+    entries = []
+    if index.exists():
+        with index.open() as f:
+            for row in csv.reader(f):
+                if not row or row[0].lstrip().startswith('#'):
                     continue
-                parts = line.split(',')
                 try:
-                    stamps.append(int(parts[0]) * 1e-9)
-                    names.append(parts[1])
+                    stamp = int(row[0]) * 1e-9
                 except ValueError:
                     continue
+                name = row[1].strip()
+                path = directory / 'data' / name
+                if not path.exists():
+                    path = directory / name
+                entries.append((stamp, path))
     else:
-        stamps, names = [], []
-        for p in glob.glob(os.path.join(cam_dir, "data", "*.png")):
-            base = os.path.splitext(os.path.basename(p))[0]
-            # svc_processed 文件名: <毫秒>000000.png
-            ms = int(base) // 10**6
-            stamps.append(ms * 1e-3)
-            names.append(os.path.basename(p))
-    i = int(np.argmin(np.abs(np.array(stamps) - frame_timestamp)))
-    return names[i], stamps[i]
+        for path in directory.iterdir():
+            if path.suffix.lower() not in ('.png', '.jpg', '.jpeg'):
+                continue
+            # Converter preserves a final millisecond timestamp; bag-export names are ns.
+            token = path.stem.split('_')[-1]
+            try:
+                value = int(token)
+            except ValueError:
+                continue
+            entries.append((value * (1e-9 if value >= 10**17 else 1e-3), path))
+    if not entries:
+        raise ValueError(f'No timestamped images in {directory}')
+    return entries
 
 
-# ------------------- 1. 读取目标帧IMU位姿 -------------------
-target_pose = None
-with open(pose_file, 'r') as f:
-    for line in f:
-        t, p_wi, q_wi = parse_pose_line(line)
-        if abs(t - frame_timestamp) < 1e-4:
-            target_pose = (p_wi, q_wi)
-            break
-if target_pose is None:
-    raise ValueError(f"未找到时间戳 {frame_timestamp}")
+def nearest(entries, timestamp, offset, tolerance):
+    stamp, path = min(entries, key=lambda item: abs(item[0] + offset - timestamp))
+    delta = stamp + offset - timestamp
+    if abs(delta) > tolerance:
+        raise ValueError(f'{path}: corrected timestamp mismatch {delta * 1000:.3f} ms')
+    return path, delta
 
-p_wi, q_wi = target_pose
-R_wi = quat_to_rot(q_wi)
-print(f"IMU位置 (世界系): {p_wi}")
 
-# ------------------- 2. 读取处理后的 SVC 图 -------------------
-cam_dir = os.path.join(data_root, cam_subdir)
-cam_filename, cam_ts = find_cam_image(cam_dir, frame_timestamp)
-cam_img_path = os.path.join(cam_dir, cam_filename)
-color_img = cv2.imread(cam_img_path)
-if color_img is None:
-    raise FileNotFoundError(f"无法读取 SVC 图: {cam_img_path}")
-h, w = color_img.shape[:2]
-print(f"SVC 图: {cam_filename} (ts={cam_ts:.6f}s, 与位姿差 {abs(cam_ts-frame_timestamp)*1e3:.1f}ms)")
-assert (h, w) == (480, 640), f"SVC 图尺寸异常: {w}x{h}"
+def rotation(q):
+    q = np.asarray(q, dtype=float)
+    norm = np.linalg.norm(q)
+    if not np.isfinite(norm) or norm < 1e-12:
+        raise ValueError('Invalid pose quaternion')
+    x, y, z, w = q / norm
+    return np.array([[1-2*(y*y+z*z), 2*(x*y-z*w), 2*(x*z+y*w)],
+                     [2*(x*y+z*w), 1-2*(x*x+z*z), 2*(y*z-x*w)],
+                     [2*(x*z-y*w), 2*(y*z+x*w), 1-2*(x*x+y*y)]])
 
-# ------------------- 3. 读取深度图 -------------------
-depth_csv = os.path.join(data_root, depth_subdir, "data.csv")
-stamps, names = [], []
-with open(depth_csv) as f:
-    for line in f:
-        line = line.strip()
-        if not line or line.startswith('#'):
-            continue
-        parts = line.split(',')
-        try:
-            stamps.append(int(parts[0]) * 1e-9)
-            names.append(parts[1])
-        except ValueError:
-            continue
-i = int(np.argmin(np.abs(np.array(stamps) - frame_timestamp)))
-depth_img_path = os.path.join(data_root, depth_subdir, "data", names[i])
-print(f"深度图: {names[i]} (ts={stamps[i]:.6f}s, 与位姿差 {abs(stamps[i]-frame_timestamp)*1e3:.1f}ms)")
-depth_img = cv2.imread(depth_img_path, cv2.IMREAD_UNCHANGED)
-if depth_img is None:
-    raise FileNotFoundError(f"无法读取深度图: {depth_img_path}")
-depth_m = depth_img.astype(np.float32) / 1000.0   # 毫米转米
 
-# ------------------- 4. 加载点云 -------------------
-points, obs_list = load_points_with_visibility(points_file)
-print(f"总点数: {len(points)}")
-if len(points) == 0:
-    raise ValueError("点云文件为空！")
+def register_depth(depth, kd, kp, r, t, shape):
+    """Forward projection with nearest-surface z buffering; leave holes invalid."""
+    y, x = np.nonzero(np.isfinite(depth) & (depth > 0))
+    rays = np.linalg.inv(kd) @ np.vstack((x, y, np.ones(len(x))))
+    p = r @ (rays * depth[y, x]) + t[:, None]
+    keep = np.isfinite(p).all(axis=0) & (p[2] > 0)
+    p = p[:, keep]
+    uv = kp @ p
+    uv = np.rint(uv[:2] / uv[2]).astype(np.int64)
+    h, w = shape
+    keep = (uv[0] >= 0) & (uv[0] < w) & (uv[1] >= 0) & (uv[1] < h)
+    result = np.full(h*w, np.inf)
+    np.minimum.at(result, uv[1, keep]*w + uv[0, keep], p[2, keep])
+    result[~np.isfinite(result)] = 0
+    return result.reshape(h, w)
 
-# ------------------- 5. 投影与深度比较 (全外参, 处理视差) -------------------
-fx, fy, cx, cy = K_D[0, 0], K_D[1, 1], K_D[0, 2], K_D[1, 2]
 
-all_pixels = []          # 投影到 SVC 图内的点 (u_s, v_s)
-valid_points_info = []   # (u_s, v_s, est_depth, gt_depth)
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--scene-dir', type=Path, required=True)
+    parser.add_argument('--data-root', type=Path, required=True)
+    parser.add_argument('--config', type=Path, required=True, help='Exact YAML used by this SLAM run')
+    parser.add_argument('--calibration', type=Path, help='Optional JSON override; repository D455/SVC calibration is used by default')
+    parser.add_argument('--camera-extrinsics', type=Path, help='Final body_T_cam0 YAML if optimized online')
+    parser.add_argument('--frame-index', type=int, default=2, help='Zero-based pose row, default third row')
+    parser.add_argument('--max-depth', type=float, default=3.)
+    parser.add_argument('--max-time-diff', type=float, default=.05, help='Seconds; no motion compensation')
+    args = parser.parse_args()
+    # D455.txt: Color -> Depth. The processed SVC image has SVC origin and
+    # Color-aligned axes, so depth -> processed is the inverse Color->Depth
+    # transform. Values below are derived from repository calibration files.
+    r_cd = np.array([[0.999994, -0.0000966545, -0.00353483],
+                     [0.0000784609, 0.999987, -0.00514674],
+                     [0.00353528, 0.00514643, 0.999981]])
+    t_cd = np.array([0.0590972937643528, -0.0000248234175, -0.000321907602483407])
+    cal = {
+        'K_depth': [[386.724945, 0, 323.348145], [0, 386.724945, 233.675964], [0, 0, 1]],
+        'R_depth_to_processed': r_cd.T.tolist(),
+        't_depth_to_processed_m': (-r_cd.T @ t_cd).tolist(),
+        'depth_scale_m': 0.001,
+        'depth_time_offset_s': 0.0,
+        'svc_time_offset_s': 0.0,
+        'source': 'data_process/D455.txt + extrinsic_svc_d455_1018_fused.txt'
+    }
+    if args.calibration:
+        cal.update(json.loads(args.calibration.read_text()))
+    required = ['K_depth', 'R_depth_to_processed', 't_depth_to_processed_m',
+                'depth_scale_m', 'depth_time_offset_s', 'svc_time_offset_s']
+    for key in required:
+        if key not in cal or cal[key] is None:
+            raise ValueError(f'Calibration requires confirmed {key}')
+    kd = np.asarray(cal['K_depth'], dtype=float)
+    r = np.asarray(cal['R_depth_to_processed'], dtype=float)
+    t = np.asarray(cal['t_depth_to_processed_m'], dtype=float)
+    if kd.shape != (3, 3) or r.shape != (3, 3) or t.shape != (3,):
+        raise ValueError('Calibration matrix/vector shape invalid')
+    if not np.isfinite(kd).all() or not np.isfinite(r).all() or not np.isfinite(t).all():
+        raise ValueError('Non-finite calibration')
+    if not np.allclose(r.T @ r, np.eye(3), atol=1e-4) or not np.isclose(np.linalg.det(r), 1., atol=1e-4):
+        raise ValueError('Depth-to-processed rotation must be a proper rotation')
+    if float(cal['depth_scale_m']) <= 0 or args.max_time_diff <= 0:
+        raise ValueError('Depth scale and time tolerance must be positive')
+    fs = cv2.FileStorage(str(args.config), cv2.FILE_STORAGE_READ)
+    if not fs.isOpened():
+        raise ValueError('Cannot open SLAM configuration')
+    optimized = int(fs.getNode('estimate_extrinsic').real()) != 0
+    intrinsics = args.config.parent / fs.getNode('cam0_calib').string()
+    fs.release()
+    if optimized and args.camera_extrinsics is None:
+        raise ValueError('Camera optimized online: provide final --camera-extrinsics, not initial config')
+    tic = matrix(args.camera_extrinsics or args.config, 'body_T_cam0')
+    fs = cv2.FileStorage(str(intrinsics), cv2.FILE_STORAGE_READ)
+    if fs.getNode('model_type').string() != 'PINHOLE':
+        raise ValueError('Processed camera must be PINHOLE')
+    distortion = fs.getNode('distortion_parameters')
+    if any(abs(distortion.getNode(k).real()) > 1e-12 for k in ('k1', 'k2', 'p1', 'p2')):
+        raise ValueError('Expected rectified processed camera with zero distortion')
+    proj = fs.getNode('projection_parameters')
+    fx, fy, cx, cy = [proj.getNode(k).real() for k in ('fx', 'fy', 'cx', 'cy')]
+    kp = np.array([[fx, 0, cx], [0, fy, cy], [0, 0, 1.]])
+    fs.release()
+    poses = np.loadtxt(args.scene_dir / 'log/pose_output.txt', ndmin=2)
+    row = poses[args.frame_index]
+    stamp, pos, rw = row[0], row[1:4], rotation(row[4:8])
+    image_path, cam_dt = nearest(image_index(args.data_root / 'svc_processed'), stamp,
+                                  cal['svc_time_offset_s'], args.max_time_diff)
+    depth_path, depth_dt = nearest(image_index(args.data_root / 'depth0'), stamp,
+                                    cal['depth_time_offset_s'], args.max_time_diff)
+    image = cv2.imread(str(image_path))
+    raw = cv2.imread(str(depth_path), cv2.IMREAD_UNCHANGED)
+    if image is None or raw is None or raw.ndim != 2:
+        raise ValueError('Cannot read color/depth image or depth is not single-channel')
+    aligned = register_depth(raw.astype(float)*cal['depth_scale_m'], kd, kp, r, t, image.shape[:2])
+    np.save(args.scene_dir / 'registered_depth_svc.npy', aligned)
+    colored = cv2.applyColorMap(np.uint8(np.clip(aligned/args.max_depth, 0, 1)*255), cv2.COLORMAP_JET)
+    overlay = image.copy()
+    valid = aligned > 0
+    overlay[valid] = cv2.addWeighted(image, .6, colored, .4, 0)[valid]
+    cv2.imwrite(str(args.scene_dir / 'color_depth_overlay.png'), overlay)
+    comparisons = []
+    h, w = aligned.shape
+    with (args.scene_dir / 'log/points_output.txt').open() as f:
+        for line in f:
+            values = np.fromstring(line, sep=' ')
+            if len(values) < 3:
+                continue
+            if len(values) > 3 and not np.any(np.abs(values[3:]-stamp) < 1e-4):
+                continue
+            p = tic[:3, :3].T @ (rw.T @ (values[:3]-pos)-tic[:3, 3])
+            if not np.isfinite(p).all() or not 0 < p[2] < args.max_depth:
+                continue
+            uv = kp @ p
+            u, v = np.rint(uv[:2]/uv[2]).astype(int)
+            if not (1 <= u < w-1 and 1 <= v < h-1):
+                continue
+            gt = aligned[v, u]
+            neighborhood = aligned[v-1:v+2, u-1:u+2]
+            surface = neighborhood[neighborhood > 0]
+            # Reject holes and discontinuities; never fill holes with estimated SLAM depth.
+            if not 0 < gt < args.max_depth or len(surface) < 5:
+                continue
+            if np.ptp(surface) > max(.05, .03*gt):
+                continue
+            comparisons.append((u, v, p[2], gt, abs(p[2]-gt), abs(p[2]-gt)/gt))
+    with (args.scene_dir / 'depth_comparison.csv').open('w') as f:
+        writer = csv.writer(f)
+        writer.writerow(['u_s', 'v_s', 'est_depth_svc(m)', 'gt_depth_svc(m)', 'abs_error(m)', 'rel_error'])
+        writer.writerows(comparisons)
+    if not comparisons:
+        raise ValueError('No valid depth correspondences; inspect registered overlay and timestamp diagnostics')
+    a = np.asarray(comparisons)
+    slope = np.linalg.lstsq(a[:, 3:4], a[:, 2], rcond=None)[0][0]
+    result = dict(timestamp=float(stamp), valid_points=len(a), slope=float(slope),
+                  rel_err_mean=float(a[:, 5].mean()), rel_err_median=float(np.median(a[:, 5])),
+                  rel_err_std=float(a[:, 5].std()), svc_time_difference_s=cam_dt,
+                  depth_time_difference_s=depth_dt, image=str(image_path), depth=str(depth_path),
+                  config=str(args.config.resolve()), calibration=cal,
+                  note='Static extrinsics only; no inter-frame motion compensation. Occlusion checks are approximate.')
+    (args.scene_dir / 'depth_eval_result.json').write_text(json.dumps(result, indent=2))
+    print(json.dumps(result, indent=2))
 
-for i, P_w in enumerate(points):
-    if obs_list[i] and not is_point_visible(frame_timestamp, obs_list[i]):
-        continue
 
-    # 世界 → 车体系(IMU) → svc_processed 相机系 (处理图坐标系 = D455 轴向, SVC 光心)
-    P_i = R_wi.T @ (P_w - p_wi)
-    P_p = R_c.T @ (P_i - t_c)         # VINS 点在处理图相机系
-    if P_p[2] <= 0 or P_p[2] > DEPTH_MAX:
-        continue
-
-    # 处理图相机系 → D455 相机系 (P_d455 = R_sd @ P_p + t_sd), 投影取深度真值
-    P_dc = R_sd @ P_p + t_sd
-    u_d = fx * P_dc[0] / P_dc[2] + cx
-    v_d = fy * P_dc[1] / P_dc[2] + cy
-    u_di, v_di = int(round(u_d)), int(round(v_d))
-    if not (0 <= u_di < w and 0 <= v_di < h):
-        continue
-
-    z_gt_d = depth_m[v_di, u_di]      # D455 测得的深度 (D455 光心)
-    if z_gt_d <= 0 or z_gt_d > DEPTH_MAX:
-        continue
-
-    # 深度真值反投影为 3D 点 (D455 系), 变换回处理图相机系 (SVC 光心, D455 轴向)
-    P_gt_d = np.array([(u_d - cx) / fx * z_gt_d,
-                       (v_d - cy) / fy * z_gt_d,
-                       z_gt_d])
-    P_gt_s = R_sd.T @ (P_gt_d - t_sd)
-    if P_gt_s[2] <= 0:
-        continue
-    gt_depth = P_gt_s[2]              # 真值点在 SVC 系的 z 深度
-
-    # VINS 点在处理图相机系的 z 深度
-    est_depth = P_p[2]
-
-    # 投影到 SVC 针孔图 (内参 = K_D, 光轴已对齐)
-    u_s = fx * P_p[0] / est_depth + cx
-    v_s = fy * P_p[1] / est_depth + cy
-    u_si, v_si = int(round(u_s)), int(round(v_s))
-    if not (0 <= u_si < w and 0 <= v_si < h):
-        continue
-
-    all_pixels.append((u_si, v_si))
-    valid_points_info.append((u_si, v_si, est_depth, gt_depth))
-
-print(f"\n总投影点（SVC 图内）: {len(all_pixels)}")
-print(f"有效深度点: {len(valid_points_info)}")
-
-# ------------------- 6. 绘制投影点 -------------------
-img_draw = color_img.copy()
-for (u, v, d_est, d_gt) in valid_points_info:
-    cv2.circle(img_draw, (u, v), 3, (0, 0, 255), -1)
-cv2.putText(img_draw, f"Valid: {len(valid_points_info)}/{len(points)}",
-            (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
-cv2.imwrite(output_image, img_draw)
-print(f"投影图像已保存至: {output_image}")
-
-# ------------------- 7. SVC 图 + 深度叠加图 -------------------
-depth_colormap = cv2.applyColorMap(
-    cv2.convertScaleAbs(depth_m, alpha=255.0 / DEPTH_MAX), cv2.COLORMAP_JET)
-overlay = cv2.addWeighted(color_img, 0.6, depth_colormap, 0.4, 0)
-cv2.imwrite(overlay_image, overlay)
-print(f"SVC-深度叠加图已保存至: {overlay_image}")
-
-# ------------------- 8. 像素分布图 -------------------
-plt.figure(figsize=(8, 6))
-if all_pixels:
-    plt.scatter([p[0] for p in all_pixels], [p[1] for p in all_pixels],
-                s=1, alpha=0.3, label='all projected')
-if valid_points_info:
-    plt.scatter([p[0] for p in valid_points_info], [p[1] for p in valid_points_info],
-                s=2, c='red', label='valid depth')
-plt.xlim(0, w); plt.ylim(h, 0)
-plt.xlabel('u'); plt.ylabel('v')
-plt.legend(); plt.title('Projected Points Distribution (SVC)')
-plt.savefig('pixel_distribution_detailed.png'); plt.close()
-print("详细像素分布图已保存至 pixel_distribution_detailed.png")
-
-# ------------------- 9. 深度误差统计 -------------------
-if valid_points_info:
-    est_depths = np.array([d[2] for d in valid_points_info])
-    gt_depths = np.array([d[3] for d in valid_points_info])
-    slope = np.linalg.lstsq(gt_depths.reshape(-1, 1), est_depths, rcond=None)[0][0]
-    print(f"\n深度回归斜率 (est/gt) = {slope:.4f}")
-
-    plt.figure()
-    plt.scatter(gt_depths, est_depths, alpha=0.6)
-    plt.plot([0, max(gt_depths)], [0, slope * max(gt_depths)], 'r--',
-             label=f'slope={slope:.2f}')
-    plt.plot([0, max(gt_depths)], [0, max(gt_depths)], 'g--', label='ideal (slope=1)')
-    plt.xlabel('GT Depth from SVC (m)')
-    plt.ylabel('VINS Est Depth from SVC (m)')
-    plt.legend(); plt.title('Depth Comparison (SVC, full extrinsic)')
-    plt.savefig(depth_scatter); plt.close()
-    print(f"深度散点图已保存至: {depth_scatter}")
-
-    rel_errors = np.abs(est_depths - gt_depths) / gt_depths
-    print(f"\n==== 深度误差结果 (SVC 光心, 全外参) ====")
-    print(f"有效点数量: {len(valid_points_info)}")
-    print(f"相对误差均值: {np.mean(rel_errors):.4f}")
-    print(f"相对误差中位数: {np.median(rel_errors):.4f}")
-    print(f"相对误差标准差: {np.std(rel_errors):.4f}")
-
-    plt.figure()
-    plt.hist(rel_errors, bins=30, edgecolor='black')
-    plt.xlabel('Relative Error'); plt.ylabel('Count')
-    plt.title('Depth Error Distribution (SVC)')
-    plt.savefig('error_histogram.png'); plt.close()
-    print("误差直方图已保存至 error_histogram.png")
-
-    with open(comparison_csv, 'w') as f:
-        f.write("u_s,v_s,est_depth_svc(m),gt_depth_svc(m),abs_error(m),rel_error\n")
-        for (u, v, d_est, d_gt) in valid_points_info:
-            abs_err = abs(d_est - d_gt)
-            rel_err = abs_err / d_gt
-            f.write(f"{u},{v},{d_est:.4f},{d_gt:.4f},{abs_err:.4f},{rel_err:.4f}\n")
-    print(f"深度对比数据已保存至: {comparison_csv}")
-
-    print("\n前20个有效点对比:")
-    print("   u    v   est_depth  gt_depth  abs_err  rel_err")
-    for i, (u, v, d_est, d_gt) in enumerate(valid_points_info[:20]):
-        abs_err = abs(d_est - d_gt)
-        rel_err = abs_err / d_gt
-        print(f"{i:2d}: {u:4d} {v:4d}   {d_est:7.4f}   {d_gt:7.4f}   "
-              f"{abs_err:7.4f}   {rel_err:6.4f}")
-else:
-    print("无有效投影点！")
+if __name__ == '__main__':
+    main()
