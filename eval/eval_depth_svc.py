@@ -109,10 +109,11 @@ def main():
                      [0.0000784609, 0.999987, -0.00514674],
                      [0.00353528, 0.00514643, 0.999981]])
     t_cd = np.array([0.0590972937643528, -0.0000248234175, -0.000321907602483407])
+    t_sc = np.array([-0.021910, 0.123421, 0.096283])
     cal = {
         'K_depth': [[386.724945, 0, 323.348145], [0, 386.724945, 233.675964], [0, 0, 1]],
         'R_depth_to_processed': r_cd.T.tolist(),
-        't_depth_to_processed_m': (-r_cd.T @ t_cd).tolist(),
+        't_depth_to_processed_m': (-r_cd.T @ (r_cd @ t_sc + t_cd)).tolist(),
         'depth_scale_m': 0.001,
         'depth_time_offset_s': 0.0,
         'svc_time_offset_s': 0.0,

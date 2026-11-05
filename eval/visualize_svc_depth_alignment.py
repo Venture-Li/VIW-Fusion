@@ -15,9 +15,15 @@ R_cd = np.array([[0.999994, -0.0000966545, -0.00353483],
                  [0.00353528, 0.00514643, 0.999981]], dtype=np.float64)
 t_cd = np.array([0.0590972937643528, -0.0000248234175,
                  -0.000321907602483407], dtype=np.float64)
+# SVC -> D455 Color, from extrinsic_svc_d455_1018_fused.txt
+R_sc = np.array([[0.99176726, 0.03108473, -0.12422338],
+                 [-0.03676192, 0.99836928, -0.04367313],
+                 [0.12266324, 0.04788027, 0.99129270]], dtype=np.float64)
+t_sc = np.array([-0.021910, 0.123421, 0.096283], dtype=np.float64)
 # Processed SVC has SVC origin and D455 Color-aligned axes.
 R_dp = R_cd.T
-t_dp = -R_cd.T @ t_cd
+# P_depth = R_cd (P_processed + t_sc) + t_cd.
+t_dp = -R_cd.T @ (R_cd @ t_sc + t_cd)
 
 
 def images(folder):
