@@ -77,6 +77,8 @@ def main():
     u = np.rint(uv[0]/uv[2]).astype(int)
     v = np.rint(uv[1]/uv[2]).astype(int)
     keep = (u >= 0) & (u < w) & (v >= 0) & (v < h)
+    u = u[keep]
+    v = v[keep]
     z = p_p[2, valid2][keep]
     # z-buffer: nearest depth wins at each processed-SVC pixel.
     registered = np.zeros((h, w), np.float32)
