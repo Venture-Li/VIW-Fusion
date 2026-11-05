@@ -90,16 +90,23 @@ def main():
     overlay = color.copy()
     overlay[mask] = cv2.addWeighted(color, 1-args.alpha, depth_color, args.alpha, 0)[mask]
     # Draw sparse projected points in green for an easier geometric check.
-    step = max(1, len(u)//5000)
+    # The projected depth lattice is not scene geometry. Draw only sparse
+    # samples so it does not mask the image and look like false contours.
+    step = max(1, len(u)//800)
     for x, y in zip(u[::step], v[::step]): cv2.circle(overlay, (int(x), int(y)), 1, (0,255,0), -1)
     cv2.putText(overlay, f'SVC {svc_ts:.6f}  depth {dep_ts:.6f}  dt={(dep_ts-svc_ts)*1000:.1f} ms',
                 (8, 22), cv2.FONT_HERSHEY_SIMPLEX, .48, (255,255,255), 1, cv2.LINE_AA)
     output = args.output or (args.scene / 'alignment_overlay.png')
     cv2.imwrite(str(output), overlay)
     cv2.imwrite(str(args.scene / 'registered_depth_svc.png'), np.uint16(np.clip(registered*1000, 0, 65535)))
+    depth_view = np.uint8(np.clip(registered/args.max_depth, 0, 1)*255)
+    depth_view[~mask] = 0
+    cv2.imwrite(str(args.scene / 'registered_depth_svc_view.png'),
+                cv2.applyColorMap(depth_view, cv2.COLORMAP_JET))
     print(f'SVC: {svc_path} ({svc_ts:.6f})')
     print(f'Depth: {dep_path} ({dep_ts:.6f}), dt={(dep_ts-svc_ts)*1000:.2f} ms')
     print(f'Projected depth pixels: {int(mask.sum())}/{h*w} ({100*mask.mean():.1f}%)')
     print(f'Overlay: {output}')
+    print(f'Depth visualization: {args.scene / "registered_depth_svc_view.png"}')
 
 if __name__ == '__main__': main()
