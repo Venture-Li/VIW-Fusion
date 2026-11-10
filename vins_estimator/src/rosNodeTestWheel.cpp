@@ -14,6 +14,7 @@
 #include <map>
 #include <thread>
 #include <mutex>
+#include <stdexcept>
 #include <ros/ros.h>
 #include <cv_bridge/cv_bridge.h>
 #include <opencv2/opencv.hpp>
@@ -28,6 +29,8 @@ queue<sensor_msgs::PointCloudConstPtr> feature_buf;
 queue<sensor_msgs::ImageConstPtr> img0_buf;
 queue<sensor_msgs::ImageConstPtr> img1_buf;
 std::mutex m_buf;
+// Optional offline mode: the bag's image count, independent of inputImageCnt.
+int expected_image_count = 0;
 
 
 void img0_callback(const sensor_msgs::ImageConstPtr &img_msg)
@@ -83,7 +86,8 @@ cv::Mat getImageFromMsg(const sensor_msgs::ImageConstPtr &img_msg)
 // extract images with same timestamp from two topics
 void sync_process()
 {
-    while(1)
+    int processed_images = 0;
+    while (ros::ok())
     {
         if(STEREO)
         {
@@ -136,7 +140,15 @@ void sync_process()
             }
             m_buf.unlock();
             if(!image.empty())
+            {
                 estimator.inputImage(time, image);
+                if (expected_image_count > 0 && ++processed_images == expected_image_count)
+                {
+                    ROS_INFO("Frontend finished all %d images; queuing end marker.", processed_images);
+                    estimator.finishInput();
+                    return;
+                }
+            }
         }
 
         std::chrono::milliseconds dura(2);
@@ -240,9 +252,9 @@ int main(int argc, char **argv)
     ros::NodeHandle n("~");
     ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Info);
 
-    if(argc != 2)
+    if(argc != 2 && argc != 3)
     {
-        printf("please intput: rosrun vins vins_node [config file] \n"
+        printf("usage: rosrun vins viwo_node <config file> [bag image count]\n"
                "for example: rosrun vins vins_node "
                "~/catkin_ws/src/VINS-Fusion/config/euroc/euroc_stereo_imu_config.yaml \n");
         return 1;
@@ -252,6 +264,26 @@ int main(int argc, char **argv)
     printf("config_file: %s\n", argv[1]);
 
     readParameters(config_file);
+    if (argc == 3)
+    {
+        try
+        {
+            size_t parsed = 0;
+            expected_image_count = std::stoi(argv[2], &parsed);
+            if (parsed != std::string(argv[2]).size() || expected_image_count <= 0)
+                throw std::invalid_argument("invalid image count");
+        }
+        catch (const std::exception &)
+        {
+            ROS_ERROR("Bag image count must be a positive integer.");
+            return 1;
+        }
+        if (STEREO || !MULTIPLE_THREAD)
+        {
+            ROS_ERROR("Offline end marker requires num_of_cam: 1 and multiple_thread: 1.");
+            return 1;
+        }
+    }
     estimator.setParameter();
 
 #ifdef EIGEN_DONT_PARALLELIZE
@@ -264,16 +296,28 @@ int main(int argc, char **argv)
 //TODO transport hints 怎么用
     ros::Subscriber sub_imu = n.subscribe(IMU_TOPIC, 2000, imu_callback, ros::TransportHints().tcpNoDelay());
     ros::Subscriber sub_wheel = n.subscribe(WHEEL_TOPIC, 2000, wheel_callback, ros::TransportHints().tcpNoDelay());
-    ros::Subscriber sub_feature = n.subscribe("/feature_tracker/feature", 2000, feature_callback);
+    ros::Subscriber sub_feature, sub_restart, sub_imu_switch, sub_cam_switch;
     ros::Subscriber sub_img0 = n.subscribe(IMAGE0_TOPIC, 100, img0_callback);
     ros::Subscriber sub_img1 = n.subscribe(IMAGE1_TOPIC, 100, img1_callback);
-    ros::Subscriber sub_restart = n.subscribe("/vins_restart", 100, restart_callback);
-    ros::Subscriber sub_imu_switch = n.subscribe("/vins_imu_switch", 100, imu_switch_callback);
-    ros::Subscriber sub_cam_switch = n.subscribe("/vins_cam_switch", 100, cam_switch_callback);
+    // An offline run has one image producer and must not reset its pending queue.
+    if (expected_image_count == 0)
+    {
+        sub_feature = n.subscribe("/feature_tracker/feature", 2000, feature_callback);
+        sub_restart = n.subscribe("/vins_restart", 100, restart_callback);
+        sub_imu_switch = n.subscribe("/vins_imu_switch", 100, imu_switch_callback);
+        sub_cam_switch = n.subscribe("/vins_cam_switch", 100, cam_switch_callback);
+    }
 
     std::thread sync_thread{sync_process};
     ros::spin();
+
+    if (sync_thread.joinable())
+        sync_thread.join();
+    if (estimator.processThread.joinable())
+        estimator.processThread.join();
+    estimator.closeInitLogFile();
     // 如果你的程序写了相关的消息订阅函数，那么程序在执行过程中，除了主程序以外，ROS还会自动在后台按照你规定的格式，接受订阅的消息，但是所接到的消息并不是
     // 立刻就被处理，而是必须要等到ros::spin()或ros::spinOnce()执行的时候才被调用，这就是消息回到函数的原理
-    return 0;
+    // External shutdown before the marker must not be archived as a complete run.
+    return expected_image_count > 0 && !estimator.processingFinished() ? 1 : 0;
 }

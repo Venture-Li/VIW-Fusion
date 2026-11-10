@@ -28,8 +28,8 @@ from rosbags.rosbag1 import Writer
 from rosbags.typesys import Stores, get_typestore
 
 # ==================== 配置 ====================
-DATA_DIR = "/media/nio/13357f85-3d3c-4608-9b8b-91b03de4c3bf1/unpacked/10.18/data"
-OUTPUT_DIR = "/media/nio/13357f85-3d3c-4608-9b8b-91b03de4c3bf1/unpacked/10.18/data_bag"
+DATA_DIR = "/media/nio/d1361833-68be-4f80-8dc2-2821ad2bc497/VIW-Fusion/data"
+OUTPUT_DIR = "/media/nio/d1361833-68be-4f80-8dc2-2821ad2bc497/VIW-Fusion/results/bags"
 B_R = 1.720  # 后轮距 (米), 10.18 实测 1720mm
 
 # SVC 处理后图像的针孔内参 (= D455 深度内参, 严格深度对齐)

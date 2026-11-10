@@ -13,6 +13,8 @@
 #include "../factor/orientation_subset_parameterization.h"
 #include <iomanip>
 #include <chrono>
+#include <cmath>
+#include <limits>
 #include <set>      // 新增：用于 std::set
 
 Estimator::Estimator(): f_manager{Rs}
@@ -35,7 +37,7 @@ Estimator::Estimator(): f_manager{Rs}
 
 Estimator::~Estimator()
 {
-    if (MULTIPLE_THREAD)
+    if (processThread.joinable())
     {
         processThread.join();
         printf("join thread \n");
@@ -366,6 +368,14 @@ void Estimator::inputImage(double t, const cv::Mat &_img, const cv::Mat &_img1)
     }
     
 }
+void Estimator::finishInput()
+{
+    // Same FIFO as the frames: the backend sees this only after all frame outputs.
+    std::lock_guard<std::mutex> lock(mBuf);
+    featureBuf.emplace(std::numeric_limits<double>::quiet_NaN(),
+                       decltype(featureBuf)::value_type::second_type{});
+}
+
 void Estimator::inputFeature(double t, const vector<cv::Point2f>& _features0, const vector<cv::Point2f>& _features1)
 {
     inputImageCnt++;
@@ -556,20 +566,41 @@ bool Estimator::WheelAvailable(double t)
 }
 void Estimator::processMeasurements()
 {
-    while (1)
+    while (ros::ok())
     {
         //printf("process measurments\n");
         // 时间 特征点ID 图像id xyz_uv_vel
         pair<double, map<int, vector<pair<int, Eigen::Matrix<double, 7, 1> > > > > feature;
         vector<pair<double, Eigen::Vector3d>> accVector, gyrVector;
         vector<pair<double, Eigen::Vector3d>> velWheelVector, gyrWheelVector;
-        if(!featureBuf.empty())
+        bool have_feature = false;
         {
-            feature = featureBuf.front();
+            std::lock_guard<std::mutex> lock(mBuf);
+            have_feature = !featureBuf.empty();
+            if (have_feature)
+            {
+                feature = featureBuf.front();
+            }
+        }
+        if (have_feature)
+        {
+            if (std::isnan(feature.first))
+            {
+                {
+                    std::lock_guard<std::mutex> lock(mBuf);
+                    featureBuf.pop();
+                }
+                processing_finished_ = true;
+                ROS_INFO("All queued frames processed and saved; shutting down.");
+                ros::shutdown();
+                return;
+            }
             curTime = feature.first + td;
             curTime_wheel = curTime - td_wheel;
             while(1)
             {
+                if (!ros::ok())
+                    return;
                 if ((!USE_IMU  || IMUAvailable(feature.first + td)))
                     break;
                 else
@@ -583,6 +614,8 @@ void Estimator::processMeasurements()
             }
             while(1)
             {
+                if (!ros::ok())
+                    return;
                 if ((!USE_WHEEL  || WheelAvailable(feature.first + td - td_wheel)))
                     break;
                 else
@@ -598,7 +631,7 @@ void Estimator::processMeasurements()
             if(USE_IMU)
                 //获取两图像帧时间戳之间的加速度和陀螺仪数据
                 getIMUInterval(prevTime, curTime, accVector, gyrVector);// 对imu的时间进行判断，将队列里的imu数据放入到accVector和gyrVector中，完成之后返回true
-            featureBuf.pop();//每次运行完之后都删除featureBuf中的元素，直到为空，已经把要删除的这个值给了feature
+            featureBuf.pop();
             mBuf.unlock();
             //TODO确认下是否统一成mBuf
             mWheelBuf.lock();

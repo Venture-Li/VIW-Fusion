@@ -55,6 +55,9 @@ class Estimator
     void inputWheel(double t, const Vector3d &linearVelocity, const Vector3d &angularVelocity);
     void inputFeature(double t, const map<int, vector<pair<int, Eigen::Matrix<double, 7, 1>>>> &featureFrame);
     void inputImage(double t, const cv::Mat &_img, const cv::Mat &_img1 = cv::Mat());
+    void finishInput();
+    // Read only after processThread has been joined.
+    bool processingFinished() const { return processing_finished_; }
     void inputFeature(double t, const vector<cv::Point2f>& _features0, const vector<cv::Point2f>& _features1=vector<cv::Point2f>());//仿真的feature
     void inputGroundtruth(double t, Eigen::Matrix<double, 7, 1>& data);
     void processIMU(double t, double dt, const Vector3d &linear_acceleration, const Vector3d &angular_velocity);
@@ -251,4 +254,6 @@ class Estimator
     double NEAR_POINT_RATIO_MIN;      // 高速时近处点选择比例下限
     double NEAR_POINT_RATIO_MAX;      // 停车时近处点选择比例上限
     double MAX_SPEED_FOR_RATIO;       // 比例计算对应的最大速度（米/秒）
+  private:
+    bool processing_finished_ = false;
 };
