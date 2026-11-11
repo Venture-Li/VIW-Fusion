@@ -57,7 +57,11 @@ bool GlobalSFM::solveFrameByPnP(Matrix3d &R_initial, Vector3d &P_initial, int i,
 	{
 		printf("unstable features tracking, please slowly move you device!\n");
 		if (int(pts_2_vector.size()) < 10)
+		{
+			printf("[SFM_DIAG] PNP_FAIL frame=%d reason=too_few_correspondences matches=%zu minimum=10\n",
+			       i, pts_2_vector.size());
 			return false;
+		}
 	}
 	cv::Mat r, rvec, t, D, tmp_r;
 	cv::eigen2cv(R_initial, tmp_r);
@@ -68,6 +72,8 @@ bool GlobalSFM::solveFrameByPnP(Matrix3d &R_initial, Vector3d &P_initial, int i,
 	pnp_succ = cv::solvePnP(pts_3_vector, pts_2_vector, K, D, rvec, t, 1);
 	if(!pnp_succ)
 	{
+		printf("[SFM_DIAG] PNP_FAIL frame=%d reason=solvePnP_returned_false matches=%zu\n",
+		       i, pts_2_vector.size());
 		return false;
 	}
 	cv::Rodrigues(rvec, r);
@@ -267,10 +273,13 @@ bool GlobalSFM::construct(int frame_num, Quaterniond* q, Vector3d* T, int l,
 		}
 	}
 
+	int ba_point_count = 0;
 	for (int i = 0; i < feature_num; i++)
 	{
 		if (sfm_f[i].state != true)
 			continue;
+		if (!sfm_f[i].observation.empty())
+			++ba_point_count;
 		for (int j = 0; j < int(sfm_f[i].observation.size()); j++)
 		{
 			int l = sfm_f[i].observation[j].first;
@@ -290,17 +299,29 @@ bool GlobalSFM::construct(int frame_num, Quaterniond* q, Vector3d* T, int l,
 	ceres::Solver::Summary summary;
 	ceres::Solve(options, &problem, &summary);
 	//std::cout << summary.BriefReport() << "\n";
+	std::cout << "[SFM_DIAG] BA_SUMMARY " << summary.BriefReport() << std::endl;
+	printf("[SFM_DIAG] BA_DETAIL frames=%d base_frame=%d points=%d observations=%d residuals=%d "
+	       "initial_cost=%.9g final_cost=%.9g mean_cost_per_observation=%.9g "
+	       "elapsed_s=%.6f time_limit_s=%.6f\n",
+	       frame_num, l, ba_point_count, summary.num_residual_blocks, summary.num_residuals,
+	       summary.initial_cost, summary.final_cost,
+	       summary.num_residual_blocks > 0 && summary.final_cost >= 0
+	           ? summary.final_cost / summary.num_residual_blocks : -1.0,
+	       summary.total_time_in_seconds, options.max_solver_time_in_seconds);
+	std::cout << "[SFM_DIAG] BA_STOP_REASON " << summary.message << std::endl;
 	
 	// 设置 BA cost
 	ba_cost = summary.final_cost;
 	
 	if (summary.termination_type == ceres::CONVERGENCE || summary.final_cost < 5e-03)
 	{
+		printf("[SFM_DIAG] BA_INTERNAL_PASS\n");
 		//cout << "vision only BA converge" << endl;
 	}
 	else
 	{
 		//cout << "vision only BA not converge " << endl;
+		printf("[SFM_DIAG] BA_INTERNAL_FAIL reason=not_converged_and_cost_not_below_0.005\n");
 		return false;
 	}
 	for (int i = 0; i < frame_num; i++)

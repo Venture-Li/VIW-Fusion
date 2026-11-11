@@ -28,8 +28,8 @@ from rosbags.rosbag1 import Writer
 from rosbags.typesys import Stores, get_typestore
 
 # ==================== 配置 ====================
-DATA_DIR = "/media/nio/d1361833-68be-4f80-8dc2-2821ad2bc497/VIW-Fusion/data"
-OUTPUT_DIR = "/media/nio/d1361833-68be-4f80-8dc2-2821ad2bc497/VIW-Fusion/results/bags"
+DATA_DIR = "/media/nio/d1361833-68be-4f80-8dc2-2821ad2bc497/VIW-Fusion/data/raw_bags"
+OUTPUT_DIR = "/media/nio/d1361833-68be-4f80-8dc2-2821ad2bc497/VIW-Fusion/data/ros_bags_wz"
 B_R = 1.720  # 后轮距 (米), 10.18 实测 1720mm
 
 # SVC 处理后图像的针孔内参 (= D455 深度内参, 严格深度对齐)
@@ -230,11 +230,11 @@ def process_scene(scene_dir, typestore):
     scene_name = os.path.basename(scene_dir)
     img_dir = os.path.join(scene_dir, "svc_processed")
     imu_csv = os.path.join(scene_dir, "imu1", "data.csv")
-    wheel_csv = os.path.join(scene_dir, "wheel0", "data.csv")
+    wheel_csv = os.path.join(scene_dir, "wheel0", "data_wz.csv")
     depth_dir = os.path.join(scene_dir, "depth0")
 
     for path, desc in [(img_dir, "svc_processed/"), (imu_csv, "imu1/data.csv"),
-                       (wheel_csv, "wheel0/data.csv")]:
+                       (wheel_csv, "wheel0/data_wz.csv")]:
         if not (os.path.isdir(path) if desc.endswith('/') else os.path.exists(path)):
             print(f"  [{scene_name}] 跳过: 缺少 {desc}")
             return False

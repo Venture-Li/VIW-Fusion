@@ -1,0 +1,10 @@
+{
+    "python-envs.defaultEnvManager": "ms-python.python:conda",
+    "python-envs.defaultPackageManager": "ms-python.python:conda",
+    "C_Cpp.intelliSenseEngine": "disabled",
+    "clangd.path": "/home/nio/code/VIW-Fusion/.vscode/clangd-docker.sh",
+    "clangd.useScriptAsExecutable": true,
+    "clangd.arguments": [
+        "--background-index"
+    ]
+}

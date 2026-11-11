@@ -1341,7 +1341,7 @@ bool Estimator::initialStructure()
     logInitData("  success", 1);
     logInitData("  ba_cost", ba_cost);
     
-    const double BA_COST_THRESHOLD = 0.02;
+    const double BA_COST_THRESHOLD = 0.03;
     if (ba_cost > 0 && ba_cost < BA_COST_THRESHOLD)
     {
         logInitMessage("SUCCESS: BA cost " + std::to_string(ba_cost) + " is below threshold " + std::to_string(BA_COST_THRESHOLD));

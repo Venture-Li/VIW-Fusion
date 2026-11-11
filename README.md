@@ -16,3 +16,11 @@ source /opt/ros/melodic/setup.bash
 source /root/catkin_ws/devel/setup.bash 
 roslaunch vins vins_rviz.launch
 ```
+
+### test
+```bash
+sed 's/scene_\$i/scene_${i}_overlap/g' run/run_all.sh \
+  > /tmp/run_scene6_overlap.sh
+
+bash /tmp/run_scene6_overlap.sh
+```
