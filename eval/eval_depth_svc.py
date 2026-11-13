@@ -9,6 +9,9 @@ import json
 from pathlib import Path
 import cv2
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 
 
 def matrix(path, key):
@@ -207,6 +210,16 @@ def main():
         raise ValueError('No valid depth correspondences; inspect registered overlay and timestamp diagnostics')
     a = np.asarray(comparisons)
     slope = np.linalg.lstsq(a[:, 3:4], a[:, 2], rcond=None)[0][0]
+    fig, ax = plt.subplots(figsize=(7, 6))
+    ax.scatter(a[:, 3], a[:, 2], alpha=.6)
+    lim = max(a[:, 3].max(), a[:, 2].max())
+    ax.plot([0, lim], [0, slope*lim], 'r--', label=f'slope={slope:.2f}')
+    ax.plot([0, lim], [0, lim], 'g--', label='ideal (slope=1)')
+    ax.set(xlabel='GT Depth (m)', ylabel='VINS Est Depth (m)',
+           title='Depth Comparison')
+    ax.legend()
+    fig.savefig(args.scene_dir / 'depth_scatter.png', dpi=120)
+    plt.close(fig)
     result = dict(timestamp=float(stamp), valid_points=len(a), slope=float(slope),
                   rel_err_mean=float(a[:, 5].mean()), rel_err_median=float(np.median(a[:, 5])),
                   rel_err_std=float(a[:, 5].std()), svc_time_difference_s=cam_dt,

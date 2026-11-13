@@ -127,11 +127,12 @@ near_point_ratio_max: 0.8         # maximum selection ratio (at stop)
 max_speed_for_ratio: 5.0          # max speed (m/s) for linear ratio mapping (≈18 km/h, slightly below 20 km/h)
 
 #imu parameters       The more accurate parameters you provide, the better performance
-# 来源: HZ-YF002-NT2 IMU3020 高精度车规级惯性测量单元产品说明书 V031_20230118
-acc_n: 5.0e-4            # 加速度计白噪声 (m/s^2/√Hz) = VRW 0.03 m/s/√hr ÷ 60
-gyr_n: 7.3e-5            # 陀螺仪白噪声 (rad/s/√Hz) = ARW 0.25 °/√hr ÷ 60 → rad
-acc_w: 1.0e-4            # 加速度计偏置随机游走 (m/s^3/√Hz), 由零偏不稳定性 45μg 估算 (τ≈100s), 手册未直接给出
-gyr_w: 2.0e-6            # 陀螺仪偏置随机游走 (rad/s^2/√Hz), 由零偏不稳定性 2°/hr 估算 (τ≈100s), 手册未直接给出
+# VINS 把 acc_n/gyr_n 当作每个采样的噪声标准差使用，不能直接用手册的噪声密度 (5e-4/7.3e-5 会让 IMU 过度可信,
+# 停车时轮速拉不住漂移)。0.024/0.002 又太松, 尺度偏大; 扫参 (scene 1/8/17/20) 后取 0.005/0.0005。
+acc_n: 0.005             # 加速度计噪声
+gyr_n: 0.0005            # 陀螺仪噪声
+acc_w: 0.0002            # 加速度计偏置随机游走
+gyr_w: 1.8e-05           # 陀螺仪偏置随机游走
 g_norm: 9.81007         # 当地重力加速度
 
 #wheel parameters
@@ -146,7 +147,7 @@ estimate_wheel_intrinsic: 0
 # 2  TODO Don't know anything about intrinsic parameters. You don't need to give sx, sy, sw. We will try to calibrate it. Do some rotation movement at beginning.
 #If you choose 0 or 1, you should write down the following sx, sy, sw.
 # wheel intrinsic
-sx: 1.0
+sx: 0.95   # 轮速比例: 以 D455 深度评测 slope≈1.05 标定, 原 1.0 时尺度偏大约 5%
 sy: 1.0
 sw: 1.0
 

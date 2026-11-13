@@ -647,7 +647,9 @@ void Estimator::processMeasurements()
                 {
                     //获取两帧IMU数据之间的dt
                     double dt;
-                    if(i == 0)
+                    if(accVector.size() == 1) // 两帧之间没有 IMU 样本 (数据丢失), 只积分本帧间隔
+                        dt = curTime - prevTime;
+                    else if(i == 0)
                         dt = accVector[i].first - prevTime;
                     else if (i == accVector.size() - 1)
                         dt = curTime - accVector[i - 1].first;
@@ -663,7 +665,9 @@ void Estimator::processMeasurements()
                 {
                     //获取两帧wheel数据之间的dt
                     double dt;
-                    if(i == 0)
+                    if(velWheelVector.size() == 1) // 两帧之间没有轮速样本 (数据丢失), 只积分本帧间隔
+                        dt = curTime_wheel - prevTime_wheel;
+                    else if(i == 0)
                         dt = velWheelVector[i].first - prevTime_wheel;
                     else if (i == velWheelVector.size() - 1)
                         dt = curTime_wheel - velWheelVector[i - 1].first;
