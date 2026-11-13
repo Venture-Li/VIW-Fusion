@@ -37,7 +37,7 @@ python3 data_process/lwc_wheel_wz.py
 python3 data_process/synthesize_bag_svc.py
 ```
 
-第一个脚本默认处理 `scene_1` 到 `scene_20`，适用于尚未修正符号的轮速 CSV。第二个脚本会覆盖目标目录中的同名 bag，建议先使用新的输出目录。合包后，如需裁剪首尾，使用 [crop_bag_overlap.py](data_process/crop_bag_overlap.py)。它默认只处理 `scene_6`，用于其他序列时需分别修改 `INPUT_BAG`、`OUTPUT_BAG` 和与运行配置一致的 `TD_NS`、`TD_WHEEL_NS`。把裁剪后的文件以 `scene_N.bag` 命名放入运行目录。脚本保留 IMU 和轮速边界样本。
+第一个脚本默认处理 `scene_1` 到 `scene_20`，适用于尚未修正符号的轮速 CSV。第二个脚本会覆盖目标目录中的同名 bag，建议先使用新的输出目录。合包后，需裁剪首尾（脚本未上传，synthesize_bag_svc.py没有裁切功能），把裁剪后的文件以 `scene_N.bag` 命名放入运行目录。脚本保留 IMU 和轮速边界样本。
 
 ## 2. 编译并运行 SLAM
 
