@@ -8,7 +8,7 @@ VISUALIZE="${VISUALIZE:-1}"
 CONTAINER="viw-dev"
 CONFIG="/root/catkin_ws/src/VIW-Fusion/config/realsense_d455i/realsense_stereo_imu_config_d455.yaml"
 OUTPUT_DIR="/root/catkin_ws/src/VIW-Fusion/output"
-BAG_DIR="/data/ros_bags"
+BAG_DIR="/data/ros_bags_wz"
 SETUP="source /opt/ros/melodic/setup.bash && source /root/catkin_ws/devel/setup.bash"
 HOST_DATA_BASE="/media/nio/d1361833-68be-4f80-8dc2-2821ad2bc497/VIW-Fusion/results/track"
 HOST_OUTPUT="/home/nio/code/VIW-Fusion/output"
@@ -49,7 +49,7 @@ fi
 image_topic=$(docker exec "$CONTAINER" sed -n 's/^image0_topic: *"\([^"]*\)".*/\1/p' "$CONFIG")
 test -n "$image_topic"
 
-for i in $(seq 1 1); do
+for i in $(seq 1 20); do
     bag_file="$BAG_DIR/scene_$i.bag"
     if ! docker exec "$CONTAINER" test -f "$bag_file"; then
         echo "SKIP: $bag_file not found"

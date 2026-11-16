@@ -1905,6 +1905,7 @@ void Estimator::optimization()
         problem.AddParameterBlock(para_Ix_sx_wheel[0],1);
         problem.AddParameterBlock(para_Ix_sy_wheel[0],1);
         problem.AddParameterBlock(para_Ix_sw_wheel[0],1);
+        problem.SetParameterBlockConstant(para_Ix_sy_wheel[0]);
         if ((ESTIMATE_INTRINSIC_WHEEL && frame_count == WINDOW_SIZE && Vs[0].norm() > 0.2) || openIxEstimation)
         {
             //ROS_INFO("estimate intrinsic param");
@@ -1914,7 +1915,7 @@ void Estimator::optimization()
         {
             //ROS_INFO("fix extinsic param");
             problem.SetParameterBlockConstant(para_Ix_sx_wheel[0]);
-            problem.SetParameterBlockConstant(para_Ix_sy_wheel[0]);
+            //problem.SetParameterBlockConstant(para_Ix_sy_wheel[0]);
             problem.SetParameterBlockConstant(para_Ix_sw_wheel[0]);
         }
     }

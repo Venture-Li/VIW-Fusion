@@ -7,7 +7,7 @@
 | 问题 | 改动 |
 | --- | --- |
 | 轮速偏航方向反了 | 对本批数据的 `wheel0/data.csv` 只取反偏航角速度 `wz`，写入 `data_wz.csv`，再生成 `ros_bags_wz`。时间戳和线速度保持原样。 |
-| 序列首尾缺少融合数据 | 按 SVC、IMU 和轮速的共同时间覆盖裁剪首尾图像，计算覆盖时考虑配置中的时间偏移。仓库提供独立裁剪脚本。 |
+| 序列首尾缺少融合数据 | 按 SVC、IMU 和轮速的共同时间覆盖裁剪首尾图像，计算覆盖时考虑配置中的时间偏移。合包时自动筛选图像，并完整保留 IMU 和轮速样本。 |
 | bag 播完时后端仍在处理 | 播放前统计图像总数并传给 `viwo_node`。前端处理完预期图像后通知后端收尾，脚本通过 `wait` 确认节点成功退出，再停止录制并归档结果。 |
 | 初始化失败或重试过多 | 将初始化 BA 代价阈值从 `0.02` 放宽到 `0.03`，补充 PnP 和 BA 诊断日志。对照实验中，初始化成功率从 19/20 提升到 20/20，`scene_6` 从第 108 次尝试缩短到第 1 次，`scene_9` 从 60 次未成功变为第 6 次成功。 |
 | 停车漂移、地图点不足及尺度偏大 | 调整 IMU 噪声参数为 `acc_n=0.005`、`gyr_n=0.0005`、`acc_w=0.0002`、`gyr_w=0.000018`。调整后，`scene_15` 恢复了可评测地图点。轮速纵向比例 `sx=0.95` 是本批数据的临时尺度修正。 |
@@ -30,14 +30,18 @@ data/
         └── depth0/              # D455 深度图及时间戳索引
 ```
 
-从原始数据重建时，在宿主机的 Python 3 环境安装 `numpy`、`opencv-python` 和 `rosbags`。先修改下列脚本顶部的数据路径，再依次运行：
+从原始数据重建时，在宿主机的 Python 3 环境安装 `numpy`、`opencv-python`、`rosbags`，然后从仓库根目录运行：
 
 ```bash
-python3 data_process/lwc_wheel_wz.py
-python3 data_process/synthesize_bag_svc.py
+python3 data_process/synthesize_bag_svc.py \
+  --data-dir /path/to/data/raw_bags \
+  --output-dir /path/to/data/ros_bags_wz \
+  --config config/realsense_d455i/realsense_stereo_imu_config_d455.yaml
 ```
 
-第一个脚本默认处理 `scene_1` 到 `scene_20`，适用于尚未修正符号的轮速 CSV。第二个脚本会覆盖目标目录中的同名 bag，建议先使用新的输出目录。合包后，需裁剪首尾（脚本未上传，synthesize_bag_svc.py没有裁切功能），把裁剪后的文件以 `scene_N.bag` 命名放入运行目录。脚本保留 IMU 和轮速边界样本。
+脚本会处理输入目录下所有 `scene_N`，从 SLAM 配置读取 `td` 和 `td_wheel`，只写入 IMU 和轮速均覆盖的 SVC 图像及对应的相机信息。IMU、轮速样本完整保留。脚本不会覆盖已有的同名 bag。这个检查针对序列首尾，序列中间的采样缺口需要另行检查。
+
+默认读取 `wheel0/data_wz.csv`。如果同事的 `wheel0/data.csv` 已确认偏航方向正确，可加 `--wheel-csv data.csv` 直接使用。合包脚本不会修改 `wz`。旧数据的取反流程见 [lwc_wheel_wz.py](data_process/lwc_wheel_wz.py)，该脚本按旧批次的目录和场景编号运行。
 
 ## 2. 编译并运行 SLAM
 
