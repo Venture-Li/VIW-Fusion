@@ -17,6 +17,33 @@
 #include <limits>
 #include <set>      // 新增：用于 std::set
 
+namespace
+{
+class StageTimer
+{
+public:
+    explicit StageTimer(double *elapsed)
+        : elapsed_(elapsed), start_(elapsed ? Clock::now() : Clock::time_point{}) {}
+
+    ~StageTimer() { stop(); }
+
+    void stop()
+    {
+        if (elapsed_)
+        {
+            const double ms = std::chrono::duration<double, std::milli>(Clock::now() - start_).count();
+            *elapsed_ = std::max(0.0, *elapsed_) + ms;
+            elapsed_ = nullptr;
+        }
+    }
+
+private:
+    using Clock = std::chrono::steady_clock;
+    double *elapsed_;
+    Clock::time_point start_;
+};
+}
+
 Estimator::Estimator(): f_manager{Rs}
 {
     ROS_INFO("init begins");
@@ -43,6 +70,51 @@ Estimator::~Estimator()
         printf("join thread \n");
     }
     closeInitLogFile();
+}
+
+bool Estimator::saveTiming() const
+{
+    if (timing_path_.empty())
+        return true;
+
+    std::ofstream csv(timing_path_);
+    csv << "image_stamp_s,phase,feature_tracking_ms,imu_preintegration_ms,wheel_preintegration_ms,"
+           "backend_image_ms,problem_build_ms,ceres_solve_ms,marginalization_ms,"
+           "near_refinement_ms,backend_total_ms,frame_total_ms\n";
+    csv << std::fixed << std::setprecision(9);
+
+    // Match queued frames to their original image timestamp. Frontend-only
+    // images still get a row, with empty backend fields.
+    std::multimap<double, double> frontend(frontend_timings_.begin(), frontend_timings_.end());
+    auto write_ms = [&csv](double ms)
+    {
+        csv << ',';
+        if (ms >= 0)
+            csv << ms;
+    };
+    for (const auto &frame : backend_timings_)
+    {
+        double tracking_ms = -1;
+        auto it = frontend.find(frame.stamp);
+        if (it != frontend.end())
+        {
+            tracking_ms = it->second;
+            frontend.erase(it);
+        }
+        const double backend_ms = frame.image_ms + std::max(0.0, frame.imu_ms)
+                                  + std::max(0.0, frame.wheel_ms);
+        csv << frame.stamp << ',' << (frame.initializing ? "initialization" : "steady");
+        for (double ms : {tracking_ms, frame.imu_ms, frame.wheel_ms, frame.image_ms,
+                          frame.build_ms, frame.solve_ms, frame.marginalization_ms,
+                          frame.refine_ms, backend_ms,
+                          tracking_ms < 0 ? -1.0 : tracking_ms + backend_ms})
+            write_ms(ms);
+        csv << '\n';
+    }
+    for (const auto &frame : frontend)
+        csv << frame.first << ",frontend_only," << frame.second << ",,,,,,,,,\n";
+    csv.close();
+    return static_cast<bool>(csv);
 }
 
 // ====== 初始化日志函数 ======
@@ -334,13 +406,16 @@ void Estimator::inputImage(double t, const cv::Mat &_img, const cv::Mat &_img1)
 {
     inputImageCnt++;
     map<int, vector<pair<int, Eigen::Matrix<double, 7, 1>>>> featureFrame;
-    TicToc featureTrackerTime;
+    double tracking_ms = -1;
+    StageTimer tracking_timer(timing_path_.empty() ? nullptr : &tracking_ms);
 
     if(_img1.empty())
         featureFrame = featureTracker.trackImage(t, _img);
     else
         featureFrame = featureTracker.trackImage(t, _img, _img1);
-    //printf("featureTracker time: %f\n", featureTrackerTime.toc());
+    tracking_timer.stop();
+    if (tracking_ms >= 0)
+        frontend_timings_.emplace_back(t, tracking_ms);
 
     if (SHOW_TRACK)
     {
@@ -639,8 +714,11 @@ void Estimator::processMeasurements()
                 getWheelInterval(prevTime_wheel, curTime_wheel, velWheelVector, gyrWheelVector);
             mWheelBuf.unlock();
 
+            BackendTiming timing;
+            const bool measure = !timing_path_.empty();
             if(USE_IMU)
             {
+                StageTimer imu_timer(measure ? &timing.imu_ms : nullptr);
                 if(!initFirstPoseFlag)
                     initFirstIMUPose(accVector);
                 for(size_t i = 0; i < accVector.size(); i++)
@@ -661,6 +739,7 @@ void Estimator::processMeasurements()
             }
             if(USE_WHEEL)
             {
+                StageTimer wheel_timer(measure ? &timing.wheel_ms : nullptr);
                 for(size_t i = 0; i < velWheelVector.size(); i++)
                 {
                     //获取两帧wheel数据之间的dt
@@ -678,7 +757,18 @@ void Estimator::processMeasurements()
                 }
             }
             mProcess.lock();
+            if (measure)
+            {
+                timing.stamp = feature.first;
+                timing.initializing = solver_flag == INITIAL;
+                active_timing_ = &timing;
+            }
+            StageTimer image_timer(measure ? &timing.image_ms : nullptr);
             processImage(feature.second, feature.first);
+            image_timer.stop();
+            active_timing_ = nullptr;
+            if (measure)
+                backend_timings_.push_back(timing);
             prevTime = curTime;
             prevTime_wheel = curTime_wheel;
 
@@ -985,6 +1075,7 @@ void Estimator::processImage(const map<int, vector<pair<int, Eigen::Matrix<doubl
         // ========== 新增：第二阶段近处点深度精修（全程开启） ==========
         if (solver_flag == NON_LINEAR)
         {
+            StageTimer refine_timer(active_timing_ ? &active_timing_->refine_ms : nullptr);
             updateNearFlags();   // 标记近处点
             refineNearPoints();  // 根据当前速度自动选择近处点比例进行深度精修
         }
@@ -1632,10 +1723,10 @@ void Estimator::vector2double()
     para_Ix_sw_wheel[0][0] = sw;
 
     Quaterniond q2{rpw};
-    para_plane_R[0][0] = q.x();
-    para_plane_R[0][1] = q.y();
-    para_plane_R[0][2] = q.z();
-    para_plane_R[0][3] = q.w();
+    para_plane_R[0][0] = q2.x();
+    para_plane_R[0][1] = q2.y();
+    para_plane_R[0][2] = q2.z();
+    para_plane_R[0][3] = q2.w();
     para_plane_Z[0][0] = zpw;
 
     VectorXd dep = f_manager.getDepthVector();
@@ -1808,7 +1899,7 @@ bool Estimator::failureDetection()
 
 void Estimator::optimization()
 {
-    TicToc t_whole, t_prepare;
+    StageTimer build_timer(active_timing_ ? &active_timing_->build_ms : nullptr);
     vector2double();
 
     ceres::Problem problem;
@@ -2082,9 +2173,11 @@ void Estimator::optimization()
         options.max_solver_time_in_seconds = SOLVER_TIME * 4.0 / 5.0;
     else
         options.max_solver_time_in_seconds = SOLVER_TIME;
-    TicToc t_solver;
     ceres::Solver::Summary summary;
+    build_timer.stop();
+    StageTimer solve_timer(active_timing_ ? &active_timing_->solve_ms : nullptr);
     ceres::Solve(options, &problem, &summary);
+    solve_timer.stop();
     //cout << summary.BriefReport() << endl;
     ROS_DEBUG("Iterations : %d", static_cast<int>(summary.iterations.size()));
     //printf("solver costs: %f \n", t_solver.toc());
@@ -2096,7 +2189,7 @@ void Estimator::optimization()
     if(frame_count < WINDOW_SIZE) //滑窗未满
         return;
     /*滑窗满了，进行边缘化处理*/
-    TicToc t_whole_marginalization;
+    StageTimer marginalization_timer(active_timing_ ? &active_timing_->marginalization_ms : nullptr);
     if (marginalization_flag == MARGIN_OLD)
     {
         MarginalizationInfo *marginalization_info = new MarginalizationInfo();

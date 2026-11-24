@@ -66,6 +66,10 @@ VISUALIZE=0 bash run/run_all.sh
 
 如需录制特征跟踪图，先将脚本中的 `HOST_OUTPUT` 改为本仓库的 `output` 绝对路径，将 `HOST_DATA_BASE` 改为跟踪 bag 的归档目录，再用 `VISUALIZE=1` 运行。主节点日志、轨迹、最终窗口位姿和稀疏点分别写入 `output/scene_N/log/` 下的 `viwo_node.log`、`vio.csv`、`pose_output.txt` 和 `points_output.txt`。节点正常退出表示处理收尾完成，评测仍需要有效的位姿和地图点文件。
 
+D455 配置启用了 `enable_timing: 1`。重新编译并运行后，每个场景的 `log/timing.csv` 会记录特征跟踪、IMU 和轮速预积分、优化问题构建、Ceres 求解、边缘化及近点精修的耗时，单位为毫秒。设置 `enable_timing: 0` 可关闭。
+
+`frame_total_ms` 是同一张图像的特征跟踪、两种预积分及后端图像处理的耗时之和，不含 bag 播放、排队、等待传感器和外层结果发布。构建、求解、边缘化和精修已经包含在后端图像处理耗时里。计算稳态统计时筛选 `phase=steady`；`initialization` 标记初始化帧，`frontend_only` 标记未送入后端的前端图像，这些图像的后端耗时和单帧总耗时留空。
+
 ## 3. 对比 D455 深度
 
 在宿主机的 Python 3 环境安装评测依赖 `numpy`、`opencv-python`、`matplotlib`，然后从仓库根目录运行：

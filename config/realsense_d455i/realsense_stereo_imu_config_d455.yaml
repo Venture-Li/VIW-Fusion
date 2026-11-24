@@ -106,9 +106,10 @@ zpw_n: 0.05
 
 #Multiple thread support
 multiple_thread: 1
+enable_timing: 1  # viwo_node 结束时输出 timing.csv
 
 #feature traker paprameters
-max_cnt: 600            # max feature number in feature tracking (increased for low-speed feature decay)
+max_cnt: 300            # max feature number in feature tracking (increased for low-speed feature decay)
 min_dist: 8             # min distance between two features (reduced for high-speed robustness)
 freq: 20                # frequence (Hz) of publish tracking result. At least 10Hz for good estimation. If set 0, the frequence will be same as raw image 
 F_threshold: 1.0        # ransac threshold (pixel)

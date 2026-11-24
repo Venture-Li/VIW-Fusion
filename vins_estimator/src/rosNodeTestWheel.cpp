@@ -284,6 +284,8 @@ int main(int argc, char **argv)
             return 1;
         }
     }
+    if (ENABLE_TIMING)
+        estimator.enableTiming(OUTPUT_FOLDER + "/timing.csv");
     estimator.setParameter();
 
 #ifdef EIGEN_DONT_PARALLELIZE
@@ -316,6 +318,11 @@ int main(int argc, char **argv)
     if (estimator.processThread.joinable())
         estimator.processThread.join();
     estimator.closeInitLogFile();
+    if (!estimator.saveTiming())
+    {
+        ROS_ERROR("Failed to write %s/timing.csv", OUTPUT_FOLDER.c_str());
+        return 1;
+    }
     // 如果你的程序写了相关的消息订阅函数，那么程序在执行过程中，除了主程序以外，ROS还会自动在后台按照你规定的格式，接受订阅的消息，但是所接到的消息并不是
     // 立刻就被处理，而是必须要等到ros::spin()或ros::spinOnce()执行的时候才被调用，这就是消息回到函数的原理
     // External shutdown before the marker must not be archived as a complete run.

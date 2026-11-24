@@ -52,6 +52,7 @@ std::string TD_WHEEL_PATH;
 std::string TD_PATH;
 std::string GROUNDTRUTH_PATH;
 std::string OUTPUT_FOLDER;
+bool ENABLE_TIMING = false;
 std::string IMU_TOPIC;
 std::string WHEEL_TOPIC;
 int ROW, COL;
@@ -150,6 +151,8 @@ void readParameters(std::string config_file)
     }
 
     fsSettings["output_path"] >> OUTPUT_FOLDER;
+    const cv::FileNode timing = fsSettings["enable_timing"];
+    ENABLE_TIMING = !timing.empty() && static_cast<int>(timing) != 0;
 
     {
         PROCESS_TIME_PATH = OUTPUT_FOLDER + "/process_time.csv";

@@ -48,6 +48,9 @@ class Estimator
     Estimator();
     ~Estimator();
     void setParameter();
+    void enableTiming(const std::string &output_path) { timing_path_ = output_path; }
+    // Write only after both processing threads have joined.
+    bool saveTiming() const;
 
     // interface
     void initFirstPose(Eigen::Vector3d p, Eigen::Matrix3d r);
@@ -255,5 +258,18 @@ class Estimator
     double NEAR_POINT_RATIO_MAX;      // 停车时近处点选择比例上限
     double MAX_SPEED_FOR_RATIO;       // 比例计算对应的最大速度（米/秒）
   private:
+    struct BackendTiming
+    {
+        double stamp = 0;
+        bool initializing = false;
+        double imu_ms = -1, wheel_ms = -1, image_ms = -1;
+        double build_ms = -1, solve_ms = -1, marginalization_ms = -1, refine_ms = -1;
+    };
+
+    std::string timing_path_;
+    // Each buffer is written by its own processing thread.
+    std::vector<std::pair<double, double>> frontend_timings_;
+    std::vector<BackendTiming> backend_timings_;
+    BackendTiming *active_timing_ = nullptr;
     bool processing_finished_ = false;
 };

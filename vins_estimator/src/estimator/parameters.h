@@ -66,6 +66,7 @@ extern std::string TD_PATH;
 extern std::string VINS_RESULT_PATH;
 extern std::string GROUNDTRUTH_PATH;
 extern std::string OUTPUT_FOLDER;
+extern bool ENABLE_TIMING;
 extern std::string IMU_TOPIC;
 extern std::string WHEEL_TOPIC;
 extern double TD;
